@@ -10,6 +10,7 @@ pub trait Handler {
 
     fn from_json(json: Self::Json) -> Self;
 
+    #[tracing::instrument(skip(dynasty))]
     async fn get(dynasty: &Dynasty, permalink: &str) -> crate::client::Result<Self>
     where
         Self::Json: serde::de::DeserializeOwned,

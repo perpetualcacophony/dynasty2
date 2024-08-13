@@ -1,5 +1,5 @@
 pub mod client;
-pub use client::Dynasty;
+pub use client::{Dynasty, Error, Result};
 
 pub mod http;
 pub use http::Http;

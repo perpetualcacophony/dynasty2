@@ -4,11 +4,14 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+backoff = { version = "0.4.0", features = ["futures"] }
 futures = "0.3.30"
 reqwest = { version = "0.12", features = ["json"], optional = true }
 serde = { version = "1.0.206", features = ["derive"] }
+tracing = "0.1.40"
 url = "2.5.2"
 
 [features]
-default = ["reqwest"]
+default = ["reqwest", "tokio"]
 reqwest = ["dep:reqwest"]
+tokio = ["backoff/tokio"]

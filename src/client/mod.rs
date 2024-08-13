@@ -1,10 +1,15 @@
 use crate::{http, model::Series, Handler, Http};
 
+#[derive(Default, Clone, Debug)]
 pub struct Dynasty {
     http: Http,
 }
 
 impl Dynasty {
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     pub fn http(&self) -> &Http {
         &self.http
     }
@@ -16,6 +21,7 @@ impl Dynasty {
 
 pub type Result<T, E = Error> = std::result::Result<T, E>;
 
+#[derive(Debug)]
 pub enum Error {
     Http(http::Error),
 }

@@ -1,9 +1,9 @@
 mod json;
-use futures::StreamExt;
+use futures::{StreamExt, TryStreamExt};
 pub use json::SeriesJson as Json;
 use json::TaggingsItem;
 
-use crate::{client, Dynasty, Handler};
+use crate::{Dynasty, Handler};
 
 use super::Chapter;
 
@@ -16,10 +16,17 @@ impl Series {
         &self.json.name
     }
 
-    pub fn chapters<'a>(
+    #[tracing::instrument(skip_all)]
+    pub async fn chapters(&self, dynasty: &Dynasty) -> crate::Result<Vec<Chapter>> {
+        let vec = self.chapters_stream(dynasty).try_collect().await?;
+        tracing::trace!("all chapters fetched");
+        Ok(vec)
+    }
+
+    pub fn chapters_stream<'a>(
         &'a self,
         dynasty: &'a Dynasty,
-    ) -> impl futures::TryStream<Ok = Chapter, Error = client::Error> + 'a {
+    ) -> impl futures::TryStream<Ok = Chapter, Error = crate::Error> + 'a {
         futures::stream::iter(self.json.taggings.iter()).filter_map(move |tagging| async move {
             match tagging {
                 TaggingsItem::Chapter {

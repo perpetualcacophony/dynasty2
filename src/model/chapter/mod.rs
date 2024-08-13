@@ -1,27 +1,29 @@
 mod json;
 pub use json::ChapterJson as Json;
 
-use crate::{client, Dynasty, Handler};
+pub mod index;
+pub use index::ChapterIndex as Index;
+
+use crate::Handler;
 
 pub struct Chapter {
     json: Json,
 }
 
 impl Chapter {
-    pub async fn get(dynasty: &Dynasty, permalink: &str) -> client::Result<Self> {
-        Ok(Self {
-            json: dynasty
-                .http()
-                .json(&format!("chapters/{permalink}"))
-                .await?,
-        })
-    }
-
     pub fn pages(&self) -> impl Iterator<Item = Page> {
         self.json.pages.iter().map(|page| Page {
             filename: &page.name,
-            url: &page.url,
+            permalink: &page.url,
         })
+    }
+
+    pub fn title(&self) -> &str {
+        &self.json.title
+    }
+
+    pub fn permalink(&self) -> &str {
+        &self.json.permalink
     }
 }
 
@@ -36,7 +38,7 @@ impl Handler for Chapter {
 
 pub struct Page<'ch> {
     pub filename: &'ch str,
-    url: &'ch str,
+    permalink: &'ch str,
 }
 
 impl<'ch> Page<'ch> {
@@ -44,7 +46,7 @@ impl<'ch> Page<'ch> {
         format!(
             "{host}{path}",
             host = crate::Http::HOST_URL,
-            path = self.url
+            path = self.permalink
         )
     }
 }
