@@ -3,3 +3,6 @@ pub use series::Series;
 
 pub mod chapter;
 pub use chapter::Chapter;
+
+pub mod tag;
+pub use tag::Tag;

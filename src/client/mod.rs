@@ -14,8 +14,8 @@ impl Dynasty {
         &self.http
     }
 
-    pub async fn series(&self, permalink: &str) -> Result<Series> {
-        Series::get(self, permalink).await
+    pub async fn series(&self, slug: &str) -> Result<Series> {
+        Series::get(self, slug).await
     }
 }
 

@@ -33,6 +33,14 @@ impl Chapter {
     pub fn set_dynasty_index(&mut self, index: usize) {
         self.dynasty_index = Some(index)
     }
+
+    pub fn id(&self) -> Id {
+        Id::from_permalink(self.permalink(), todo!())
+    }
+
+    pub fn index(&self) -> Option<Index> {
+        self.id().index()
+    }
 }
 
 impl Handler for Chapter {

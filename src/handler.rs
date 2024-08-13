@@ -4,14 +4,14 @@ pub trait Handler {
     const PATH: &str;
     type Json;
 
-    fn path(permalink: &str) -> String {
-        Self::PATH.to_owned() + "/" + permalink
+    fn permalink(slug: &str) -> String {
+        Self::PATH.to_owned() + "/" + slug
     }
 
     fn from_json(json: Self::Json) -> Self;
 
     #[tracing::instrument(skip(dynasty))]
-    async fn get(dynasty: &Dynasty, permalink: &str) -> crate::client::Result<Self>
+    async fn get(dynasty: &Dynasty, slug: &str) -> crate::client::Result<Self>
     where
         Self::Json: serde::de::DeserializeOwned,
         Self: Sized,
@@ -19,7 +19,7 @@ pub trait Handler {
         Ok(Self::from_json(
             dynasty
                 .http()
-                .json::<Self::Json>(&Self::path(permalink))
+                .json::<Self::Json>(&Self::permalink(slug))
                 .await?,
         ))
     }
