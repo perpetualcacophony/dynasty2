@@ -4,10 +4,14 @@ pub use json::ChapterJson as Json;
 pub mod index;
 pub use index::ChapterIndex as Index;
 
+pub mod id;
+pub use id::ChapterId as Id;
+
 use crate::Handler;
 
 pub struct Chapter {
     json: Json,
+    pub dynasty_index: Option<usize>,
 }
 
 impl Chapter {
@@ -25,6 +29,10 @@ impl Chapter {
     pub fn permalink(&self) -> &str {
         &self.json.permalink
     }
+
+    pub fn set_dynasty_index(&mut self, index: usize) {
+        self.dynasty_index = Some(index)
+    }
 }
 
 impl Handler for Chapter {
@@ -32,7 +40,10 @@ impl Handler for Chapter {
     type Json = Json;
 
     fn from_json(json: Self::Json) -> Self {
-        Self { json }
+        Self {
+            json,
+            dynasty_index: None,
+        }
     }
 }
 

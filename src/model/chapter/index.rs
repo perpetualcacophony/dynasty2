@@ -1,9 +1,9 @@
 use std::str::FromStr;
 
-#[derive(Default)]
+#[derive(Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct ChapterIndex {
-    major: usize,
-    minor: Option<usize>,
+    pub major: usize,
+    pub minor: Option<usize>,
 }
 
 impl ChapterIndex {
@@ -11,6 +11,14 @@ impl ChapterIndex {
         Self {
             major: value,
             minor: None,
+        }
+    }
+
+    pub fn to_dynasty(self) -> String {
+        if let Some(minor) = self.minor {
+            format!("{major}_{minor}", major = self.major)
+        } else {
+            self.major.to_string()
         }
     }
 }
@@ -36,6 +44,22 @@ impl FromStr for ChapterIndex {
                 kind: parse_int.into(),
             })?)
         })
+    }
+}
+
+impl PartialOrd for ChapterIndex {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for ChapterIndex {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        if self.major == other.major {
+            self.minor.cmp(&other.minor)
+        } else {
+            self.major.cmp(&other.major)
+        }
     }
 }
 

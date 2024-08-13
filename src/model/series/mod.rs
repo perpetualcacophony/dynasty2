@@ -27,16 +27,25 @@ impl Series {
         &'a self,
         dynasty: &'a Dynasty,
     ) -> impl futures::TryStream<Ok = Chapter, Error = crate::Error> + 'a {
-        futures::stream::iter(self.json.taggings.iter()).filter_map(move |tagging| async move {
-            match tagging {
-                TaggingsItem::Chapter {
-                    title: _,
-                    ref permalink,
-                    released_on: _,
-                } => Some(Chapter::get(dynasty, permalink).await),
-                _ => None,
-            }
-        })
+        futures::stream::iter(self.json.taggings.iter())
+            .filter_map(move |tagging| async move {
+                match tagging {
+                    TaggingsItem::Chapter {
+                        title: _,
+                        ref permalink,
+                        released_on: _,
+                    } => Some(Chapter::get(dynasty, permalink).await),
+                    _ => None,
+                }
+            })
+            .enumerate()
+            .filter_map(|(n, mut chapter)| async move {
+                let _ = chapter
+                    .iter_mut()
+                    .map(|chapter| chapter.set_dynasty_index(n));
+
+                Some(chapter)
+            })
     }
 }
 
