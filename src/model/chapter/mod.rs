@@ -1,4 +1,5 @@
 mod json;
+use futures::{Stream, StreamExt, TryStream, TryStreamExt};
 pub use json::ChapterJson as Json;
 
 pub mod index;
@@ -7,7 +8,9 @@ pub use index::ChapterIndex as Index;
 pub mod id;
 pub use id::ChapterId as Id;
 
-use crate::Handler;
+use crate::{Dynasty, Handler};
+
+use super::{tag::TagType, Series, Tag};
 
 pub struct Chapter {
     json: Json,
@@ -35,11 +38,27 @@ impl Chapter {
     }
 
     pub fn id(&self) -> Id {
-        Id::from_permalink(self.permalink(), todo!())
+        Id::from_permalink(self.permalink(), self.series_tag().map(Tag::slug))
     }
 
     pub fn index(&self) -> Option<Index> {
         self.id().index()
+    }
+
+    pub fn tags(&self) -> impl Iterator<Item = &Tag> {
+        self.json.tags.iter()
+    }
+
+    pub fn series_tag(&self) -> Option<&Tag> {
+        self.tags().find(|tag| tag.is_series())
+    }
+
+    pub async fn series(&self, dynasty: &Dynasty) -> Option<crate::Result<Series>> {
+        if let Some(tag) = self.series_tag() {
+            tag.series(dynasty).await
+        } else {
+            None
+        }
     }
 }
 

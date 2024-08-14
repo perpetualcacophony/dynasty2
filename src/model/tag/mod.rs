@@ -5,12 +5,17 @@ use crate::Dynasty;
 
 use super::Series;
 
-#[derive(Clone, Debug, PartialEq, Eq)]
+#[derive(Clone, Debug, PartialEq, Eq, serde::Deserialize)]
+#[serde(transparent)]
 pub struct Tag {
     json: Json,
 }
 
 impl Tag {
+    pub fn from_json(json: Json) -> Self {
+        Self { json }
+    }
+
     pub fn name(&self) -> &str {
         &self.json.name
     }

@@ -1,4 +1,8 @@
-use crate::{http, model::Series, Handler, Http};
+use crate::{
+    http,
+    model::{tag::TagType, Series, Tag},
+    Handler, Http,
+};
 
 #[derive(Default, Clone, Debug)]
 pub struct Dynasty {

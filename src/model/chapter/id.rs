@@ -34,15 +34,19 @@ impl<'a> ChapterId<'a> {
         format!("{series}_{chapter_id}", chapter_id = self.to_dynasty())
     }
 
-    pub fn from_permalink(permalink: &'a str, series: &str) -> Self {
-        let raw = permalink
-            .strip_prefix(&format!("{series}_"))
-            .expect("permalink should start with series");
+    pub fn from_permalink(permalink: &'a str, series: Option<&str>) -> Self {
+        if let Some(series) = series {
+            let chapter_slug = permalink
+                .strip_prefix(&format!("{series}_"))
+                .expect("permalink should start with series");
 
-        if let Some(index) = raw.strip_prefix("ch") {
-            Self::Index(index.parse().expect("should be valid index"))
+            if let Some(index) = chapter_slug.strip_prefix("ch") {
+                Self::Index(index.parse().expect("should be valid index"))
+            } else {
+                Self::Text(chapter_slug)
+            }
         } else {
-            Self::Text(raw)
+            Self::Text(permalink)
         }
     }
 
