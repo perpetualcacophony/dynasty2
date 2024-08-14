@@ -12,6 +12,11 @@ use crate::{Dynasty, Handler};
 
 use super::{tag::TagType, Series, Tag};
 
+pub use json::ChapterMeta as Meta;
+
+mod group;
+pub use group::ChapterGroupMeta as GroupMeta;
+
 pub struct Chapter {
     json: Json,
     pub dynasty_index: Option<usize>,

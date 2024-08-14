@@ -11,7 +11,7 @@ pub struct SeriesJson {
 
     pub cover: String,
 
-    pub link: String,
+    pub link: Option<String>,
 
     pub description: String,
 

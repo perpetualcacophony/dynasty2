@@ -1,4 +1,4 @@
-use crate::model::Tag;
+use crate::model::{tag, Tag};
 
 #[derive(serde::Deserialize)]
 pub struct ChapterJson {
@@ -15,4 +15,15 @@ pub struct ChapterJson {
 pub struct PageJson {
     pub name: String,
     pub url: String,
+}
+
+#[derive(serde::Deserialize)]
+pub struct ChapterMeta {
+    title: String,
+
+    permalink: String,
+
+    released_on: String,
+
+    tags: Vec<tag::Meta>,
 }

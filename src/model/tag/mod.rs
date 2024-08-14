@@ -5,6 +5,10 @@ use crate::Dynasty;
 
 use super::Series;
 
+mod page;
+
+pub use page::TagMeta as Meta;
+
 #[derive(Clone, Debug, PartialEq, Eq, serde::Deserialize)]
 #[serde(transparent)]
 pub struct Tag {
