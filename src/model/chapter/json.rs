@@ -1,29 +1,34 @@
-use crate::model::{tag, Tag};
+use crate::model::TagMeta;
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct ChapterJson {
-    pub title: String,
+    #[serde(flatten)]
+    pub meta: ChapterMeta,
+
     pub long_title: String,
-    pub permalink: String,
-    pub released_on: String,
     pub added_on: String,
     pub pages: Box<[PageJson]>,
-    pub tags: Box<[Tag]>,
 }
 
-#[derive(serde::Deserialize)]
+impl ChapterJson {
+    pub fn tags(&self) -> impl Iterator<Item = &TagMeta> {
+        self.meta.tags.iter()
+    }
+}
+
+#[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct PageJson {
     pub name: String,
     pub url: String,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct ChapterMeta {
-    title: String,
+    pub title: String,
 
-    permalink: String,
+    pub permalink: String,
 
-    released_on: String,
+    pub released_on: String,
 
-    tags: Vec<tag::Meta>,
+    pub tags: Vec<TagMeta>,
 }

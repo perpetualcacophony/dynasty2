@@ -5,9 +5,7 @@ use crate::Dynasty;
 
 use super::Series;
 
-mod page;
-
-pub use page::TagMeta as Meta;
+pub use json::TagMeta as Meta;
 
 #[derive(Clone, Debug, PartialEq, Eq, serde::Deserialize)]
 #[serde(transparent)]
@@ -53,7 +51,7 @@ impl Tag {
     }
 }
 
-#[derive(Clone, Debug, PartialEq, Eq, Copy)]
+#[derive(Clone, Debug, PartialEq, Eq, Copy, Hash)]
 pub enum TagType {
     Author,
     General,

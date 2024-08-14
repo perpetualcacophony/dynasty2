@@ -10,7 +10,7 @@ pub use id::ChapterId as Id;
 
 use crate::{Dynasty, Handler};
 
-use super::{tag::TagType, Series, Tag};
+use super::{tag::TagType, Series, Tag, TagMeta};
 
 pub use json::ChapterMeta as Meta;
 
@@ -31,11 +31,11 @@ impl Chapter {
     }
 
     pub fn title(&self) -> &str {
-        &self.json.title
+        &self.json.meta.title
     }
 
     pub fn permalink(&self) -> &str {
-        &self.json.permalink
+        &self.json.meta.permalink
     }
 
     pub fn set_dynasty_index(&mut self, index: usize) {
@@ -43,24 +43,20 @@ impl Chapter {
     }
 
     pub fn id(&self) -> Id {
-        Id::from_permalink(self.permalink(), self.series_tag().map(Tag::slug))
+        Id::from_permalink(self.permalink(), self.series_tag().map(TagMeta::slug))
     }
 
     pub fn index(&self) -> Option<Index> {
         self.id().index()
     }
 
-    pub fn tags(&self) -> impl Iterator<Item = &Tag> {
-        self.json.tags.iter()
-    }
-
-    pub fn series_tag(&self) -> Option<&Tag> {
-        self.tags().find(|tag| tag.is_series())
+    pub fn series_tag(&self) -> Option<&TagMeta> {
+        self.json.tags().find(|tag| tag.is_series())
     }
 
     pub async fn series(&self, dynasty: &Dynasty) -> Option<crate::Result<Series>> {
         if let Some(tag) = self.series_tag() {
-            tag.series(dynasty).await
+            Some(dynasty.series(tag.slug()).await)
         } else {
             None
         }
