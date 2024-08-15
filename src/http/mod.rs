@@ -15,15 +15,15 @@ impl Http {
         url::Url::parse(Self::HOST_URL).expect("host url should be valid")
     }
 
-    pub fn construct_url(path: &str) -> Result<url::Url, url::ParseError> {
-        Self::host_url().join(path)
+    pub fn construct_url(permalink: &str) -> Result<url::Url, url::ParseError> {
+        Self::host_url().join(permalink)
     }
 
     #[cfg(feature = "reqwest")]
     #[tracing::instrument(skip(self))]
-    pub async fn json<Json: serde::de::DeserializeOwned>(&self, path: &str) -> Result<Json> {
-        let mut url = Self::construct_url(path).unwrap();
-        url.set_path(&format!("{path}.json"));
+    pub async fn json<Json: serde::de::DeserializeOwned>(&self, permalink: &str) -> Result<Json> {
+        let mut url = Self::construct_url(permalink).unwrap();
+        url.set_path(&format!("{permalink}.json"));
         tracing::debug!(%url);
 
         let json: Result<Json> =
@@ -37,7 +37,7 @@ impl Http {
                     .json::<Json>()
                     .await
                     .map_err(|err| JsonError {
-                        path: path.to_owned(),
+                        path: permalink.to_owned(),
                         client: err.into(),
                     })
                     .map_err(Error::from)?)

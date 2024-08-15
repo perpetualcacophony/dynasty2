@@ -1,5 +1,5 @@
 mod json;
-use futures::{Stream, StreamExt, TryStream, TryStreamExt};
+use futures::{Stream, StreamExt};
 pub use json::ChapterJson as Json;
 
 pub mod index;
@@ -8,9 +8,9 @@ pub use index::ChapterIndex as Index;
 pub mod id;
 pub use id::ChapterId as Id;
 
-use crate::{Dynasty, Handler};
+use crate::Dynasty;
 
-use super::{tag::TagType, Series, Tag, TagMeta};
+use super::{Series, Tag, TagMeta};
 
 pub use json::ChapterMeta as Meta;
 
@@ -23,6 +23,13 @@ pub struct Chapter {
 }
 
 impl Chapter {
+    pub async fn get(dynasty: &Dynasty, slug: &str) -> crate::Result<Self> {
+        Ok(Self {
+            json: dynasty.get_json(crate::Path::Chapter, slug).await?,
+            dynasty_index: None,
+        })
+    }
+
     pub fn pages(&self) -> impl Iterator<Item = Page> {
         self.json.pages.iter().map(|page| Page {
             filename: &page.name,
@@ -61,17 +68,9 @@ impl Chapter {
             None
         }
     }
-}
 
-impl Handler for Chapter {
-    const PATH: &str = "chapters";
-    type Json = Json;
-
-    fn from_json(json: Self::Json) -> Self {
-        Self {
-            json,
-            dynasty_index: None,
-        }
+    pub fn tags<'a>(&'a self, dynasty: &'a Dynasty) -> impl Stream<Item = crate::Result<Tag>> + 'a {
+        futures::stream::iter(self.json.tags()).then(|tag| tag.get(dynasty))
     }
 }
 

@@ -9,3 +9,6 @@ pub use model::{Chapter, Series};
 
 mod handler;
 use handler::Handler;
+
+pub mod path;
+pub use path::Path;

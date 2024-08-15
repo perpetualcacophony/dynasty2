@@ -1,6 +1,9 @@
 use std::ops::Deref;
 
-use crate::model::{ChapterGroupMeta, ChapterMeta};
+use crate::{
+    model::{ChapterGroupMeta, ChapterMeta},
+    Dynasty,
+};
 
 use super::TagType;
 
@@ -69,5 +72,17 @@ impl TagMeta {
 
     pub fn is_crossover(&self) -> bool {
         self.slug() == "crossover"
+    }
+
+    pub fn permalink(&self) -> String {
+        format!(
+            "{path}/{slug}",
+            path = self.type_.path(),
+            slug = self.slug()
+        )
+    }
+
+    pub async fn get(&self, dynasty: &Dynasty) -> crate::Result<TagJson> {
+        Ok(dynasty.http().json(&self.permalink()).await?)
     }
 }

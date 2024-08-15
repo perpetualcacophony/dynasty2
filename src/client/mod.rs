@@ -1,8 +1,4 @@
-use crate::{
-    http,
-    model::{tag::TagType, Series, Tag},
-    Handler, Http,
-};
+use crate::{http, model::Series, Chapter, Handler, Http, Path};
 
 #[derive(Default, Clone, Debug)]
 pub struct Dynasty {
@@ -20,6 +16,18 @@ impl Dynasty {
 
     pub async fn series(&self, slug: &str) -> Result<Series> {
         Series::get(self, slug).await
+    }
+
+    pub async fn get_json<Json: serde::de::DeserializeOwned>(
+        &self,
+        path: Path,
+        slug: &str,
+    ) -> Result<Json> {
+        Ok(self.http().json(&path.permalink(slug)).await?)
+    }
+
+    pub async fn chapter(&self, slug: &str) -> Result<Chapter> {
+        Chapter::get(self, slug).await
     }
 }
 

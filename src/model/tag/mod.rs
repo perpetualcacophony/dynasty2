@@ -1,55 +1,5 @@
 pub mod json;
-pub use json::TagJson as Json;
-
-use crate::Dynasty;
-
-use super::Series;
-
-pub use json::TagMeta as Meta;
-
-#[derive(Clone, Debug, PartialEq, Eq, serde::Deserialize)]
-#[serde(transparent)]
-pub struct Tag {
-    json: Json,
-}
-
-impl Tag {
-    pub fn from_json(json: Json) -> Self {
-        Self { json }
-    }
-
-    pub fn name(&self) -> &str {
-        &self.json.name
-    }
-
-    pub fn slug(&self) -> &str {
-        &self.json.permalink
-    }
-
-    pub fn is_crossover(&self) -> bool {
-        self.slug() == "crossover"
-    }
-
-    pub fn permalink(&self) -> String {
-        format!(
-            "{path}/{slug}",
-            path = self.json.type_.path(),
-            slug = self.slug()
-        )
-    }
-
-    pub fn is_series(&self) -> bool {
-        self.json.type_ == TagType::Series
-    }
-
-    pub async fn series(&self, dynasty: &Dynasty) -> Option<crate::Result<Series>> {
-        if self.is_series() {
-            Some(dynasty.series(self.slug()).await)
-        } else {
-            None
-        }
-    }
-}
+pub use json::{TagJson as Tag, TagMeta as Meta};
 
 #[derive(Clone, Debug, PartialEq, Eq, Copy, Hash)]
 pub enum TagType {

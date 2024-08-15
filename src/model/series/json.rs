@@ -1,4 +1,4 @@
-use crate::model::tag;
+use crate::model::TagMeta;
 
 #[derive(serde::Deserialize)]
 pub struct SeriesJson {
@@ -17,7 +17,7 @@ pub struct SeriesJson {
 
     pub taggings: Box<[TaggingsItem]>,
 
-    pub tags: Box<[tag::Json]>,
+    pub tags: Box<[TagMeta]>,
 }
 
 #[derive(serde::Deserialize)]
