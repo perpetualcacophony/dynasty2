@@ -31,11 +31,7 @@ impl Grouping {
     }
 
     pub fn title(&self) -> &str {
-        self.tag.name()
-    }
-
-    pub fn cover(&self) -> &str {
-        &self.cover
+        self.name()
     }
 
     pub fn tags(&self) -> impl Iterator<Item = &TagMeta> {
