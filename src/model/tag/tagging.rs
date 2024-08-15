@@ -15,6 +15,14 @@ impl Tagging {
             None
         }
     }
+
+    pub fn header(&self) -> Option<&str> {
+        if let Self::Header(header) = self {
+            Some(&header.header)
+        } else {
+            None
+        }
+    }
 }
 
 #[derive(serde::Deserialize, Clone, Debug, Hash, PartialEq, Eq)]

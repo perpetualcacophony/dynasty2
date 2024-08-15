@@ -2,15 +2,35 @@ use futures::{StreamExt, TryStreamExt};
 
 use crate::Dynasty;
 
-use super::{Chapter, ParseTag, Tag};
+use super::{Chapter, ChapterMeta, Tag, Tagging};
 
+#[derive(serde::Deserialize)]
 pub struct Series {
-    tag: Tag,
+    #[serde(flatten)]
+    pub tag: Tag,
+
+    pub cover: String,
+
+    pub description: Option<String>,
 }
 
 impl Series {
+    pub async fn get(dynasty: &Dynasty, slug: &str) -> crate::Result<Self> {
+        dynasty
+            .get_json(crate::Path::Tag(super::TagType::Series), slug)
+            .await
+    }
+
     pub fn title(&self) -> &str {
         &self.tag.name
+    }
+
+    pub fn cover(&self) -> &str {
+        &self.cover
+    }
+
+    pub fn volumes(&self) -> Vec<Volume> {
+        todo!()
     }
 
     #[tracing::instrument(skip_all)]
@@ -37,13 +57,7 @@ impl Series {
     }
 }
 
-impl ParseTag for Series {
-    const TYPE: super::TagType = super::TagType::Series;
-
-    fn from_tag(tag: Tag) -> Self
-    where
-        Self: Sized,
-    {
-        Self { tag }
-    }
+pub struct Volume<'series> {
+    name: &'series str,
+    chapters: Vec<&'series ChapterMeta>,
 }

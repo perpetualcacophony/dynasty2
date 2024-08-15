@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 use crate::model::TagMeta;
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
@@ -16,6 +18,14 @@ impl ChapterJson {
     }
 }
 
+impl Deref for ChapterJson {
+    type Target = ChapterMeta;
+
+    fn deref(&self) -> &Self::Target {
+        &self.meta
+    }
+}
+
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct PageJson {
     pub name: String,
@@ -31,4 +41,10 @@ pub struct ChapterMeta {
     pub released_on: String,
 
     pub tags: Vec<TagMeta>,
+}
+
+impl ChapterMeta {
+    pub fn slug(&self) -> &str {
+        &self.permalink
+    }
 }

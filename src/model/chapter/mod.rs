@@ -30,6 +30,10 @@ impl Chapter {
         })
     }
 
+    pub async fn from_meta(dynasty: &Dynasty, meta: &Meta) -> crate::Result<Self> {
+        Self::get(dynasty, meta.slug()).await
+    }
+
     pub fn pages(&self) -> impl Iterator<Item = Page> {
         self.json.pages.iter().map(|page| Page {
             filename: &page.name,

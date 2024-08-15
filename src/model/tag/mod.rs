@@ -24,15 +24,9 @@ pub struct Tag {
 
     pub tags: Vec<Meta>,
 
-    pub cover: Option<String>,
-
-    pub link: Option<String>,
-
     pub aliases: Vec<String>,
 
-    pub description: Option<String>,
-
-    pub taggings: Vec<Tagging>,
+    taggings: Vec<Tagging>,
 
     pub taggables: Option<Vec<ChapterGroupMeta>>,
 
@@ -46,7 +40,11 @@ impl Tag {
     }
 
     pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
-        self.taggings.iter().filter_map(Tagging::chapter)
+        self.taggings().filter_map(Tagging::chapter)
+    }
+
+    pub fn taggings(&self) -> impl Iterator<Item = &Tagging> {
+        self.taggings.iter()
     }
 }
 

@@ -1,6 +1,6 @@
 use crate::{
     http,
-    model::{ParseTag, Series, Tag, TagType},
+    model::{Series, Tag, TagType},
     Chapter, Http, Path,
 };
 
@@ -18,10 +18,6 @@ impl Dynasty {
         &self.http
     }
 
-    pub async fn series(&self, slug: &str) -> Result<Series> {
-        Series::parse(self.tag(TagType::Series, slug).await?).ok_or(Error::ParseTag)
-    }
-
     pub async fn get_json<Json: serde::de::DeserializeOwned>(
         &self,
         path: Path,
@@ -36,6 +32,10 @@ impl Dynasty {
 
     pub async fn tag(&self, tag_type: TagType, slug: &str) -> Result<Tag> {
         Ok(self.http().json(&tag_type.permalink(slug)).await?)
+    }
+
+    pub async fn series(&self, slug: &str) -> Result<Series> {
+        Series::get(self, slug).await
     }
 }
 
