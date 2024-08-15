@@ -2,7 +2,7 @@ use futures::{StreamExt, TryStreamExt};
 
 use crate::Dynasty;
 
-use super::{Chapter, ChapterMeta, Tag, TagMeta, Tagging};
+use super::{Chapter, ChapterGroupTagging, ChapterMeta, Tag, TagMeta};
 
 #[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Series {
@@ -12,6 +12,8 @@ pub struct Series {
     pub cover: String,
 
     pub description: Option<String>,
+
+    taggings: Vec<ChapterGroupTagging>,
 }
 
 impl Series {
@@ -33,13 +35,17 @@ impl Series {
         self.tag.tags()
     }
 
+    pub fn taggings(&self) -> impl Iterator<Item = &ChapterGroupTagging> {
+        self.taggings.iter()
+    }
+
     pub fn volumes(&self) -> Vec<Volume> {
         let mut counters = Vec::new();
 
         let mut name = "";
         let mut counter = 0;
 
-        for tagging in self.tag.taggings() {
+        for tagging in self.taggings() {
             if let Some(header) = tagging.header() {
                 counters.push((name, counter));
 
@@ -52,7 +58,7 @@ impl Series {
             }
         }
 
-        let mut chapters = self.tag.taggings().filter_map(Tagging::chapter);
+        let mut chapters = self.taggings().filter_map(ChapterGroupTagging::chapter);
 
         let mut volumes = Vec::new();
 
@@ -80,7 +86,7 @@ impl Series {
         &'a self,
         dynasty: &'a Dynasty,
     ) -> impl futures::TryStream<Ok = Chapter, Error = crate::Error> + 'a {
-        futures::stream::iter(self.tag.chapters())
+        futures::stream::iter(self.taggings().filter_map(ChapterGroupTagging::chapter))
             .then(move |meta| Chapter::get(dynasty, &meta.permalink))
             .enumerate()
             .filter_map(|(n, mut chapter)| async move {

@@ -15,7 +15,7 @@ use super::{Series, Tag, TagMeta};
 pub use json::ChapterMeta as Meta;
 
 mod group;
-pub use group::ChapterGroupMeta as GroupMeta;
+pub use group::{ChapterGroupMeta as GroupMeta, ChapterGroupTagging as GroupTagging};
 
 pub struct Chapter {
     json: Json,
