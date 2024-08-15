@@ -5,4 +5,4 @@ pub mod chapter;
 pub use chapter::{Chapter, GroupMeta as ChapterGroupMeta, Meta as ChapterMeta};
 
 pub mod tag;
-pub use tag::{Meta as TagMeta, Tag, Type as TagType};
+pub use tag::{Meta as TagMeta, Parse as ParseTag, Tag, Tagging, Type as TagType};

@@ -1,19 +1,16 @@
-mod json;
 use futures::{StreamExt, TryStreamExt};
-pub use json::SeriesJson as Json;
-use json::TaggingsItem;
 
-use crate::{Dynasty, Handler};
+use crate::Dynasty;
 
-use super::Chapter;
+use super::{Chapter, ParseTag, Tag};
 
 pub struct Series {
-    json: Json,
+    tag: Tag,
 }
 
 impl Series {
     pub fn title(&self) -> &str {
-        &self.json.name
+        &self.tag.name
     }
 
     #[tracing::instrument(skip_all)]
@@ -27,17 +24,8 @@ impl Series {
         &'a self,
         dynasty: &'a Dynasty,
     ) -> impl futures::TryStream<Ok = Chapter, Error = crate::Error> + 'a {
-        futures::stream::iter(self.json.taggings.iter())
-            .filter_map(move |tagging| async move {
-                match tagging {
-                    TaggingsItem::Chapter {
-                        title: _,
-                        ref permalink,
-                        released_on: _,
-                    } => Some(Chapter::get(dynasty, permalink).await),
-                    _ => None,
-                }
-            })
+        futures::stream::iter(self.tag.chapters())
+            .then(move |meta| Chapter::get(dynasty, &meta.permalink))
             .enumerate()
             .filter_map(|(n, mut chapter)| async move {
                 let _ = chapter
@@ -49,11 +37,13 @@ impl Series {
     }
 }
 
-impl Handler for Series {
-    const PATH: &str = "series";
-    type Json = Json;
+impl ParseTag for Series {
+    const TYPE: super::TagType = super::TagType::Series;
 
-    fn from_json(json: Self::Json) -> Self {
-        Self { json }
+    fn from_tag(tag: Tag) -> Self
+    where
+        Self: Sized,
+    {
+        Self { tag }
     }
 }

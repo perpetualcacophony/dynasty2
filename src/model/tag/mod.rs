@@ -4,9 +4,18 @@ pub use meta::TagMeta as Meta;
 mod tag_type;
 pub use tag_type::TagType as Type;
 
+mod parse;
+pub use parse::ParseTag as Parse;
+
+mod tagging;
+pub use tagging::Tagging;
+
 use std::ops::Deref;
 
-use crate::model::{ChapterGroupMeta, ChapterMeta};
+use crate::{
+    model::{ChapterGroupMeta, ChapterMeta},
+    Dynasty,
+};
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Tag {
@@ -23,7 +32,7 @@ pub struct Tag {
 
     pub description: Option<String>,
 
-    pub taggings: Vec<ChapterMeta>,
+    pub taggings: Vec<Tagging>,
 
     pub taggables: Option<Vec<ChapterGroupMeta>>,
 
@@ -32,8 +41,12 @@ pub struct Tag {
 }
 
 impl Tag {
+    pub async fn get(dynasty: &Dynasty, tag_type: Type, slug: &str) -> crate::Result<Self> {
+        dynasty.tag(tag_type, slug).await
+    }
+
     pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
-        self.taggings.iter()
+        self.taggings.iter().filter_map(Tagging::chapter)
     }
 }
 

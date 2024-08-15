@@ -31,6 +31,10 @@ impl TagType {
             Self::General => "tags",
         }
     }
+
+    pub fn permalink(&self, slug: &str) -> String {
+        format!("{path}/{slug}", path = self.path())
+    }
 }
 
 impl<'a> TryFrom<&'a str> for TagType {
