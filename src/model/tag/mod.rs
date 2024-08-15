@@ -9,18 +9,16 @@ pub use parse::ParseTag as Parse;
 
 use std::ops::Deref;
 
-use crate::{model::ChapterGroupMeta, Dynasty};
+use crate::Dynasty;
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct Tag {
+pub struct Tag<Meta = meta::TagMeta> {
     #[serde(flatten)]
-    pub meta: Meta,
+    meta: Meta,
 
-    tags: Vec<Meta>,
+    tags: Vec<meta::TagMeta>,
 
     pub aliases: Vec<String>,
-
-    pub taggables: Option<Vec<ChapterGroupMeta>>,
 
     #[serde(flatten)]
     pub pages: Option<PagesJson>,
@@ -30,13 +28,15 @@ impl Tag {
     pub async fn get(dynasty: &Dynasty, tag_type: Type, slug: &str) -> crate::Result<Self> {
         dynasty.tag(tag_type, slug).await
     }
+}
 
+impl<M> Tag<M> {
     pub fn tags(&self) -> impl Iterator<Item = &Meta> {
         self.tags.iter()
     }
 }
 
-impl Deref for Tag {
+impl<Meta> Deref for Tag<Meta> {
     type Target = Meta;
 
     fn deref(&self) -> &Self::Target {

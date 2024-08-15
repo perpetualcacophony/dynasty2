@@ -3,7 +3,7 @@ use crate::Dynasty;
 use super::{Tag, Type};
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct TagMeta {
+pub struct TagMeta<Type = super::Type> {
     name: String,
 
     #[serde(rename = "type")]
@@ -12,7 +12,7 @@ pub struct TagMeta {
     permalink: String,
 }
 
-impl TagMeta {
+impl<T> TagMeta<T> {
     pub fn name(&self) -> &str {
         &self.name
     }
@@ -21,14 +21,19 @@ impl TagMeta {
         &self.permalink
     }
 
-    pub fn is_series(&self) -> bool {
+    pub fn is_series(&self) -> bool
+    where
+        T: PartialEq<Type>,
+    {
         self.type_ == Type::Series
     }
 
     pub fn is_crossover(&self) -> bool {
         self.slug() == "crossover"
     }
+}
 
+impl TagMeta {
     pub fn permalink(&self) -> String {
         format!(
             "{path}/{slug}",

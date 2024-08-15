@@ -1,8 +1,13 @@
 pub mod series;
+use std::ops::Deref;
+
 pub use series::{Series, Tagging as SeriesTagging};
 
 pub mod anthology;
 pub use anthology::Anthology;
+
+mod meta;
+pub use meta::GroupingMeta as Meta;
 
 mod kind;
 pub use kind::GroupingKind as Kind;
@@ -13,7 +18,7 @@ use crate::Dynasty;
 #[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Grouping {
     #[serde(flatten)]
-    pub tag: Tag,
+    pub tag: Tag<Meta>,
 
     pub cover: String,
 
@@ -35,5 +40,13 @@ impl Grouping {
 
     pub fn tags(&self) -> impl Iterator<Item = &TagMeta> {
         self.tag.tags()
+    }
+}
+
+impl Deref for Grouping {
+    type Target = Tag<Meta>;
+
+    fn deref(&self) -> &Self::Target {
+        &self.tag
     }
 }
