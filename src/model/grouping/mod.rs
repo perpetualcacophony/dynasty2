@@ -1,6 +1,9 @@
 pub mod series;
 pub use series::{Series, Tagging as SeriesTagging};
 
+pub mod anthology;
+pub use anthology::Anthology;
+
 mod kind;
 pub use kind::GroupingKind as Kind;
 

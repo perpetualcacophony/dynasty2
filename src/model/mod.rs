@@ -1,5 +1,5 @@
 pub mod grouping;
-pub use grouping::{Grouping, Series};
+pub use grouping::{Anthology, Grouping, Series};
 
 pub mod chapter;
 pub use chapter::{Chapter, GroupMeta as ChapterGroupMeta, Meta as ChapterMeta};
