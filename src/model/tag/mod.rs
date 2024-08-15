@@ -22,7 +22,7 @@ pub struct Tag {
     #[serde(flatten)]
     pub meta: Meta,
 
-    pub tags: Vec<Meta>,
+    tags: Vec<Meta>,
 
     pub aliases: Vec<String>,
 
@@ -45,6 +45,10 @@ impl Tag {
 
     pub fn taggings(&self) -> impl Iterator<Item = &Tagging> {
         self.taggings.iter()
+    }
+
+    pub fn tags(&self) -> impl Iterator<Item = &Meta> {
+        self.tags.iter()
     }
 }
 

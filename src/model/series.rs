@@ -2,7 +2,7 @@ use futures::{StreamExt, TryStreamExt};
 
 use crate::Dynasty;
 
-use super::{Chapter, ChapterMeta, Tag, Tagging};
+use super::{Chapter, ChapterMeta, Tag, TagMeta, Tagging};
 
 #[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Series {
@@ -22,11 +22,15 @@ impl Series {
     }
 
     pub fn title(&self) -> &str {
-        &self.tag.name
+        self.tag.name()
     }
 
     pub fn cover(&self) -> &str {
         &self.cover
+    }
+
+    pub fn tags(&self) -> impl Iterator<Item = &TagMeta> {
+        self.tag.tags()
     }
 
     pub fn volumes(&self) -> Vec<Volume> {

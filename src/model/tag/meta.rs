@@ -4,15 +4,19 @@ use super::{Tag, Type};
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct TagMeta {
-    pub name: String,
+    name: String,
 
     #[serde(rename = "type")]
     pub type_: Type,
 
-    pub permalink: String,
+    permalink: String,
 }
 
 impl TagMeta {
+    pub fn name(&self) -> &str {
+        &self.name
+    }
+
     pub fn slug(&self) -> &str {
         &self.permalink
     }
@@ -34,6 +38,6 @@ impl TagMeta {
     }
 
     pub async fn get(&self, dynasty: &Dynasty) -> crate::Result<Tag> {
-        Ok(dynasty.http().json(&self.permalink()).await?)
+        dynasty.tag(self.type_, self.slug()).await
     }
 }

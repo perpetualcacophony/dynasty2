@@ -1,6 +1,7 @@
 #[derive(Clone, Debug, PartialEq, Eq, Copy, Hash)]
 pub enum TagType {
     Author,
+    Anthology,
     General,
     Series,
     Scanlator,
@@ -17,6 +18,7 @@ impl TagType {
             "Scanlator" => Ok(Self::Scanlator),
             "Pairing" => Ok(Self::Pairing),
             "Doujin" => Ok(Self::Doujin),
+            "Anthology" => Ok(Self::Anthology),
             _ => Err(s),
         }
     }
@@ -29,6 +31,7 @@ impl TagType {
             Self::Scanlator => "scanlators",
             Self::Pairing => "pairings",
             Self::General => "tags",
+            Self::Anthology => "anthologies",
         }
     }
 
