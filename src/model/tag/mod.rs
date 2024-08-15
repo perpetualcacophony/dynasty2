@@ -8,6 +8,7 @@ mod parse;
 pub use parse::ParseTag as Parse;
 
 mod view;
+pub use view::TagView as View;
 
 use std::ops::Deref;
 
@@ -21,9 +22,6 @@ pub struct Tag<Meta = meta::TagMeta> {
     tags: Vec<meta::TagMeta>,
 
     pub aliases: Vec<String>,
-
-    #[serde(flatten)]
-    pub pages: Option<PagesJson>,
 }
 
 impl Tag {
@@ -44,11 +42,4 @@ impl<Meta> Deref for Tag<Meta> {
     fn deref(&self) -> &Self::Target {
         &self.meta
     }
-}
-
-#[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct PagesJson {
-    pub current_page: usize,
-
-    pub total_pages: usize,
 }
