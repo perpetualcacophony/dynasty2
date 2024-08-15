@@ -7,6 +7,8 @@ pub use tag_type::TagType as Type;
 mod parse;
 pub use parse::ParseTag as Parse;
 
+mod view;
+
 use std::ops::Deref;
 
 use crate::Dynasty;

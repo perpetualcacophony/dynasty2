@@ -3,7 +3,7 @@ use std::ops::Deref;
 
 pub use series::{Series, Tagging as SeriesTagging};
 
-pub mod anthology;
+mod anthology;
 pub use anthology::Anthology;
 
 mod meta;
@@ -12,37 +12,57 @@ pub use meta::GroupingMeta as Meta;
 mod kind;
 pub use kind::GroupingKind as Kind;
 
-use super::{Tag, TagMeta};
-use crate::Dynasty;
+mod inner;
+pub use inner::GroupingInner as Inner;
 
-#[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Grouping {
-    #[serde(flatten)]
-    pub tag: Tag<Meta>,
-
-    pub cover: String,
-
-    pub description: Option<String>,
+pub enum Grouping {
+    Anthology(Anthology),
+    Series(Series),
 }
 
-impl Grouping {
-    pub async fn get(dynasty: &Dynasty, kind: Kind, slug: &str) -> crate::Result<Self> {
-        dynasty.get_json(crate::Path::Tag(kind.into()), slug).await
+impl From<Anthology> for Grouping {
+    fn from(value: Anthology) -> Self {
+        Self::Anthology(value)
     }
+}
 
-    pub fn title(&self) -> &str {
-        self.name()
+impl TryFrom<Grouping> for Anthology {
+    type Error = Grouping;
+
+    fn try_from(value: Grouping) -> Result<Self, Self::Error> {
+        if let Grouping::Anthology(anthology) = value {
+            Ok(anthology)
+        } else {
+            Err(value)
+        }
     }
+}
 
-    pub fn tags(&self) -> impl Iterator<Item = &TagMeta> {
-        self.tag.tags()
+impl From<Series> for Grouping {
+    fn from(value: Series) -> Self {
+        Self::Series(value)
+    }
+}
+
+impl TryFrom<Grouping> for Series {
+    type Error = Grouping;
+
+    fn try_from(value: Grouping) -> Result<Self, Self::Error> {
+        if let Grouping::Series(series) = value {
+            Ok(series)
+        } else {
+            Err(value)
+        }
     }
 }
 
 impl Deref for Grouping {
-    type Target = Tag<Meta>;
+    type Target = Inner;
 
     fn deref(&self) -> &Self::Target {
-        &self.tag
+        match self {
+            Self::Anthology(anthology) => anthology,
+            Self::Series(series) => series,
+        }
     }
 }

@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use futures::TryStreamExt;
 
-use super::Grouping;
+use super::Inner;
 
 use crate::Dynasty;
 
@@ -17,7 +17,7 @@ pub use volume::Volume;
 #[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Series {
     #[serde(flatten)]
-    grouping: Grouping,
+    grouping: Inner,
 
     taggings: Vec<Tagging>,
 }
@@ -96,7 +96,7 @@ impl Series {
 }
 
 impl Deref for Series {
-    type Target = Grouping;
+    type Target = Inner;
 
     fn deref(&self) -> &Self::Target {
         &self.grouping

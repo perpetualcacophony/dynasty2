@@ -5,12 +5,12 @@ use crate::{
     Dynasty,
 };
 
-use super::Grouping;
+use super::Inner;
 
 #[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Anthology {
     #[serde(flatten)]
-    grouping: Grouping,
+    grouping: Inner,
 
     taggings: Vec<ChapterMeta>,
 }
@@ -28,7 +28,7 @@ impl Anthology {
 }
 
 impl Deref for Anthology {
-    type Target = Grouping;
+    type Target = Inner;
 
     fn deref(&self) -> &Self::Target {
         &self.grouping
