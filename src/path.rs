@@ -1,4 +1,4 @@
-use crate::model::tag::TagType;
+use crate::model::TagType;
 
 pub enum Path {
     Chapter,

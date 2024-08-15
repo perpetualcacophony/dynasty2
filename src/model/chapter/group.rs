@@ -1,4 +1,4 @@
-use crate::model::tag::TagType;
+use crate::model::TagType;
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct ChapterGroupMeta {

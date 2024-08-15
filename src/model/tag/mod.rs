@@ -1,55 +1,53 @@
-pub mod json;
-pub use json::{TagJson as Tag, TagMeta as Meta};
+mod meta;
+pub use meta::TagMeta as Meta;
 
-#[derive(Clone, Debug, PartialEq, Eq, Copy, Hash)]
-pub enum TagType {
-    Author,
-    General,
-    Series,
-    Scanlator,
-    Pairing,
-    Doujin,
+mod tag_type;
+pub use tag_type::TagType as Type;
+
+use std::ops::Deref;
+
+use crate::model::{ChapterGroupMeta, ChapterMeta};
+
+#[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+pub struct Tag {
+    #[serde(flatten)]
+    pub meta: Meta,
+
+    pub tags: Vec<Meta>,
+
+    pub cover: Option<String>,
+
+    pub link: Option<String>,
+
+    pub aliases: Vec<String>,
+
+    pub description: Option<String>,
+
+    pub taggings: Vec<ChapterMeta>,
+
+    pub taggables: Option<Vec<ChapterGroupMeta>>,
+
+    #[serde(flatten)]
+    pub pages: Option<PagesJson>,
 }
 
-impl TagType {
-    pub fn parse(s: &str) -> Result<Self, &str> {
-        match s {
-            "Author" => Ok(Self::Author),
-            "General" => Ok(Self::General),
-            "Series" => Ok(Self::Series),
-            "Scanlator" => Ok(Self::Scanlator),
-            "Pairing" => Ok(Self::Pairing),
-            "Doujin" => Ok(Self::Doujin),
-            _ => Err(s),
-        }
-    }
-
-    pub fn path(&self) -> &'static str {
-        match self {
-            Self::Author => "authors",
-            Self::Doujin => "doujins",
-            Self::Series => "series",
-            Self::Scanlator => "scanlators",
-            Self::Pairing => "pairings",
-            Self::General => "tags",
-        }
-    }
-}
-
-impl<'a> TryFrom<&'a str> for TagType {
-    type Error = &'a str;
-
-    fn try_from(value: &'a str) -> Result<Self, Self::Error> {
-        Self::parse(value)
+impl Tag {
+    pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
+        self.taggings.iter()
     }
 }
 
-impl<'de> serde::Deserialize<'de> for TagType {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: serde::Deserializer<'de>,
-    {
-        let s = String::deserialize(deserializer)?;
-        Self::parse(&s).map_err(serde::de::Error::custom)
+impl Deref for Tag {
+    type Target = Meta;
+
+    fn deref(&self) -> &Self::Target {
+        &self.meta
     }
+}
+
+#[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
+pub struct PagesJson {
+    pub current_page: usize,
+
+    pub total_pages: usize,
 }
