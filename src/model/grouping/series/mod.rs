@@ -1,41 +1,35 @@
-use futures::{StreamExt, TryStreamExt};
+use std::ops::Deref;
+
+use futures::TryStreamExt;
+
+use super::Grouping;
 
 use crate::Dynasty;
 
-use super::{Chapter, ChapterGroupTagging, ChapterMeta, Tag, TagMeta};
+use crate::model::{Chapter, TagType};
+
+mod tagging;
+pub use tagging::SeriesTagging as Tagging;
+
+mod volume;
+pub use volume::Volume;
 
 #[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Series {
     #[serde(flatten)]
-    pub tag: Tag,
+    grouping: Grouping,
 
-    pub cover: String,
-
-    pub description: Option<String>,
-
-    taggings: Vec<ChapterGroupTagging>,
+    taggings: Vec<Tagging>,
 }
 
 impl Series {
     pub async fn get(dynasty: &Dynasty, slug: &str) -> crate::Result<Self> {
         dynasty
-            .get_json(crate::Path::Tag(super::TagType::Series), slug)
+            .get_json(crate::Path::Tag(TagType::Series), slug)
             .await
     }
 
-    pub fn title(&self) -> &str {
-        self.tag.name()
-    }
-
-    pub fn cover(&self) -> &str {
-        &self.cover
-    }
-
-    pub fn tags(&self) -> impl Iterator<Item = &TagMeta> {
-        self.tag.tags()
-    }
-
-    pub fn taggings(&self) -> impl Iterator<Item = &ChapterGroupTagging> {
+    pub fn taggings(&self) -> impl Iterator<Item = &Tagging> {
         self.taggings.iter()
     }
 
@@ -58,7 +52,7 @@ impl Series {
             }
         }
 
-        let mut chapters = self.taggings().filter_map(ChapterGroupTagging::chapter);
+        let mut chapters = self.taggings().filter_map(Tagging::chapter);
 
         let mut volumes = Vec::new();
 
@@ -86,7 +80,9 @@ impl Series {
         &'a self,
         dynasty: &'a Dynasty,
     ) -> impl futures::TryStream<Ok = Chapter, Error = crate::Error> + 'a {
-        futures::stream::iter(self.taggings().filter_map(ChapterGroupTagging::chapter))
+        use futures::StreamExt;
+
+        futures::stream::iter(self.taggings().filter_map(Tagging::chapter))
             .then(move |meta| Chapter::get(dynasty, &meta.permalink))
             .enumerate()
             .filter_map(|(n, mut chapter)| async move {
@@ -99,7 +95,10 @@ impl Series {
     }
 }
 
-pub struct Volume<'series> {
-    name: &'series str,
-    chapters: Vec<&'series ChapterMeta>,
+impl Deref for Series {
+    type Target = Grouping;
+
+    fn deref(&self) -> &Self::Target {
+        &self.grouping
+    }
 }
