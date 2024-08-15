@@ -6,6 +6,7 @@ use super::Inner;
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Pairing {
+    #[serde(flatten)]
     inner: Inner,
 }
 

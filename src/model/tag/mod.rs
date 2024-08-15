@@ -21,7 +21,7 @@ pub struct Tag<Meta = meta::TagMeta> {
 
     tags: Vec<meta::TagMeta>,
 
-    pub aliases: Vec<String>,
+    aliases: Vec<String>,
 }
 
 impl Tag {
@@ -33,6 +33,10 @@ impl Tag {
 impl<M> Tag<M> {
     pub fn tags(&self) -> impl Iterator<Item = &Meta> {
         self.tags.iter()
+    }
+
+    pub fn aliases(&self) -> impl Iterator<Item = &str> {
+        self.aliases.iter().map(String::as_str)
     }
 }
 
