@@ -4,7 +4,7 @@ use crate::Dynasty;
 
 use super::{Chapter, ChapterMeta, Tag, Tagging};
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Series {
     #[serde(flatten)]
     pub tag: Tag,
@@ -30,7 +30,39 @@ impl Series {
     }
 
     pub fn volumes(&self) -> Vec<Volume> {
-        todo!()
+        let mut counters = Vec::new();
+
+        let mut name = "";
+        let mut counter = 0;
+
+        for tagging in self.tag.taggings() {
+            if let Some(header) = tagging.header() {
+                counters.push((name, counter));
+
+                name = header;
+                counter = 0;
+            } else if tagging.chapter().is_some() {
+                counter += 1;
+            } else {
+                unreachable!()
+            }
+        }
+
+        let mut chapters = self.tag.taggings().filter_map(Tagging::chapter);
+
+        let mut volumes = Vec::new();
+
+        for (name, count) in counters.into_iter().skip(1) {
+            let volume_chapters = chapters.by_ref().take(count);
+
+            let volume = Volume {
+                name,
+                chapters: volume_chapters.collect(),
+            };
+            volumes.push(volume)
+        }
+
+        volumes
     }
 
     #[tracing::instrument(skip_all)]
