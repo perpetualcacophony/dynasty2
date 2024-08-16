@@ -15,3 +15,6 @@ pub use pairing::Pairing;
 
 mod doujins;
 pub use doujins::Doujins;
+
+mod scanlator;
+pub use scanlator::Scanlator;
