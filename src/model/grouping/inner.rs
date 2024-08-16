@@ -1,7 +1,10 @@
 use std::ops::Deref;
 
-use crate::model::{TagInternal, TagMeta};
 use crate::Dynasty;
+use crate::{
+    model::{TagInternal, TagMeta},
+    Slug,
+};
 
 use super::{Kind, Meta};
 
@@ -14,7 +17,7 @@ pub struct GroupingInner {
 }
 
 impl GroupingInner {
-    pub async fn get(dynasty: &Dynasty, kind: Kind, slug: &str) -> crate::Result<Self> {
+    pub async fn get(dynasty: &Dynasty, kind: Kind, slug: &Slug) -> crate::Result<Self> {
         dynasty.get_json(crate::Path::Tag(kind.into()), slug).await
     }
 

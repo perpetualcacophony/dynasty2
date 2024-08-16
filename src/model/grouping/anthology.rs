@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use crate::{
     model::{ChapterMeta, TagType},
-    Dynasty,
+    Dynasty, Slug,
 };
 
 use super::Inner;
@@ -17,7 +17,7 @@ pub struct Anthology {
 }
 
 impl Anthology {
-    pub async fn get(dynasty: &Dynasty, slug: &str) -> crate::Result<Self> {
+    pub async fn get(dynasty: &Dynasty, slug: &Slug) -> crate::Result<Self> {
         dynasty
             .get_json(crate::Path::Tag(TagType::Anthology), slug)
             .await

@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use crate::{model::ChapterMeta, Dynasty};
+use crate::{model::ChapterMeta, Dynasty, Slug};
 
 use super::{Pages, Tag};
 
@@ -25,7 +25,7 @@ impl Deref for Scanlator {
 }
 
 impl Scanlator {
-    pub async fn get(dynasty: &Dynasty, slug: &str) -> crate::Result<Self> {
+    pub async fn get(dynasty: &Dynasty, slug: &Slug) -> crate::Result<Self> {
         dynasty
             .get_json(crate::Path::Tag(crate::model::TagType::Scanlator), slug)
             .await

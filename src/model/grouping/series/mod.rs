@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use super::Inner;
 
-use crate::{model::ChapterMeta, Dynasty};
+use crate::{model::ChapterMeta, Dynasty, Slug};
 
 use crate::model::TagType;
 
@@ -26,7 +26,7 @@ impl Series {
     ///
     /// This method is semantically equivalent to
     /// `https://dynasty-scans.com/series/{slug}`
-    pub async fn get(dynasty: &Dynasty, slug: &str) -> crate::Result<Self> {
+    pub async fn get(dynasty: &Dynasty, slug: &Slug) -> crate::Result<Self> {
         dynasty
             .get_json(crate::Path::Tag(TagType::Series), slug)
             .await

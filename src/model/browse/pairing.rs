@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use crate::Dynasty;
+use crate::{Dynasty, Slug};
 
 use super::Inner;
 
@@ -12,7 +12,7 @@ pub struct Pairing {
 }
 
 impl Pairing {
-    pub async fn get(dynasty: &Dynasty, slug: &str) -> crate::Result<Self> {
+    pub async fn get(dynasty: &Dynasty, slug: &Slug) -> crate::Result<Self> {
         dynasty
             .get_json(crate::Path::Tag(crate::model::TagType::Pairing), slug)
             .await

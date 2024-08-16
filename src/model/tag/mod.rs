@@ -12,7 +12,7 @@ pub use view::TagView as View;
 
 use std::ops::Deref;
 
-use crate::Dynasty;
+use crate::{Dynasty, Slug};
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct TagInternal<Meta = meta::TagMeta> {
@@ -25,7 +25,7 @@ pub struct TagInternal<Meta = meta::TagMeta> {
 }
 
 impl TagInternal {
-    pub async fn get(dynasty: &Dynasty, tag_type: Type, slug: &str) -> crate::Result<Self> {
+    pub async fn get(dynasty: &Dynasty, tag_type: Type, slug: &Slug) -> crate::Result<Self> {
         dynasty.get_json(crate::Path::Tag(tag_type), slug).await
     }
 }
