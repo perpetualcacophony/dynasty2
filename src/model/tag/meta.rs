@@ -1,4 +1,4 @@
-use crate::Dynasty;
+use crate::{Dynasty, Slug};
 
 use super::{TagInternal, Type};
 
@@ -9,7 +9,7 @@ pub struct TagMeta<Type = super::Type> {
     #[serde(rename = "type")]
     pub type_: Type,
 
-    permalink: String,
+    permalink: Slug,
 }
 
 impl<T> TagMeta<T> {
@@ -17,7 +17,7 @@ impl<T> TagMeta<T> {
         &self.name
     }
 
-    pub fn slug(&self) -> &str {
+    pub fn slug(&self) -> &Slug {
         &self.permalink
     }
 

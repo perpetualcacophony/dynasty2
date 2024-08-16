@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::{fmt::Display, ops::Deref};
 
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Slug {
@@ -34,5 +34,17 @@ impl<'de> serde::Deserialize<'de> for Slug {
     {
         Self::from_string(String::deserialize(deserializer)?)
             .ok_or_else(|| serde::de::Error::custom("slug should not contain any slashes"))
+    }
+}
+
+impl<'a> PartialEq<&'a str> for &'a Slug {
+    fn eq(&self, other: &&'a str) -> bool {
+        self.as_str().eq(*other)
+    }
+}
+
+impl Display for Slug {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.as_str().fmt(f)
     }
 }

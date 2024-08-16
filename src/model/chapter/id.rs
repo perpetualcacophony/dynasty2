@@ -1,3 +1,5 @@
+use crate::Slug;
+
 use super::Index;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -34,7 +36,7 @@ impl<'a> ChapterId<'a> {
         format!("{series}_{chapter_id}", chapter_id = self.to_dynasty())
     }
 
-    pub fn from_permalink(permalink: &'a str, series: Option<&str>) -> Self {
+    pub fn from_permalink(permalink: &'a str, series: Option<&Slug>) -> Self {
         if let Some(series) = series {
             let chapter_slug = permalink
                 .strip_prefix(&format!("{series}_"))

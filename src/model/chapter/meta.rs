@@ -1,4 +1,4 @@
-use crate::{model::TagMeta, Date, Dynasty, Series};
+use crate::{model::TagMeta, Date, Dynasty, Series, Slug};
 
 use super::Chapter;
 
@@ -10,7 +10,7 @@ use super::Chapter;
 pub struct ChapterMeta {
     title: String,
 
-    permalink: String,
+    permalink: Slug,
 
     released_on: Date,
 
@@ -29,7 +29,7 @@ impl ChapterMeta {
         &self.title
     }
 
-    pub fn slug(&self) -> &str {
+    pub fn slug(&self) -> &Slug {
         &self.permalink
     }
 

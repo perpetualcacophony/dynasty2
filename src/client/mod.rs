@@ -3,7 +3,7 @@ use std::fmt::Display;
 use crate::{
     http,
     model::{Doujins, Scanlator, Series},
-    Author, Chapter, Http, Pairing, Path, Tag,
+    Author, Chapter, Http, Pairing, Path, Slug, Tag,
 };
 
 #[derive(Default, Clone, Debug)]
@@ -23,36 +23,36 @@ impl Dynasty {
     pub async fn get_json<Json: serde::de::DeserializeOwned>(
         &self,
         path: Path,
-        slug: &str,
+        slug: &Slug,
     ) -> Result<Json> {
         Ok(self.http().json(&path.permalink(slug)).await?)
     }
 
-    pub async fn chapter(&self, slug: &str) -> Result<Chapter> {
+    pub async fn chapter(&self, slug: &Slug) -> Result<Chapter> {
         Chapter::get(self, slug).await
     }
 
-    pub async fn tag(&self, slug: &str) -> Result<Tag> {
+    pub async fn tag(&self, slug: &Slug) -> Result<Tag> {
         Tag::get(self, slug).await
     }
 
-    pub async fn pairing(&self, slug: &str) -> Result<Pairing> {
+    pub async fn pairing(&self, slug: &Slug) -> Result<Pairing> {
         Pairing::get(self, slug).await
     }
 
-    pub async fn author(&self, slug: &str) -> Result<Author> {
+    pub async fn author(&self, slug: &Slug) -> Result<Author> {
         Author::get(self, slug).await
     }
 
-    pub async fn scanlator(&self, slug: &str) -> Result<Scanlator> {
+    pub async fn scanlator(&self, slug: &Slug) -> Result<Scanlator> {
         Scanlator::get(self, slug).await
     }
 
-    pub async fn doujins(&self, slug: &str) -> Result<Doujins> {
+    pub async fn doujins(&self, slug: &Slug) -> Result<Doujins> {
         Doujins::get(self, slug).await
     }
 
-    pub async fn series(&self, slug: &str) -> Result<Series> {
+    pub async fn series(&self, slug: &Slug) -> Result<Series> {
         Series::get(self, slug).await
     }
 }

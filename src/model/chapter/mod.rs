@@ -12,7 +12,7 @@ pub use meta::ChapterMeta as Meta;
 mod page;
 pub use page::Page;
 
-use crate::{Dynasty, Timestamp};
+use crate::{Dynasty, Slug, Timestamp};
 
 use super::TagMeta;
 
@@ -47,7 +47,7 @@ impl Chapter {
     ///
     /// This method is semantically equivalent to
     /// `https://dynasty-scans.com/chapter/{slug}`
-    pub async fn get(dynasty: &Dynasty, slug: &str) -> crate::Result<Self> {
+    pub async fn get(dynasty: &Dynasty, slug: &Slug) -> crate::Result<Self> {
         dynasty.get_json(crate::Path::Chapter, slug).await
     }
 
