@@ -56,7 +56,7 @@ impl<'a> TryFrom<&'a str> for Slug<'a> {
     type Error = &'a str;
 
     fn try_from(value: &'a str) -> Result<Self, Self::Error> {
-        if value.contains('/') {
+        if !value.contains('/') {
             Ok(Self { inner: value })
         } else {
             Err(value)

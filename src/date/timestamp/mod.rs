@@ -19,6 +19,8 @@ pub struct Timestamp {
 
 impl Timestamp {
     const OFFSET_STR: &str = "-04:00";
+
+    #[cfg(feature = "chrono")]
     const OFFSET_SECS: u16 = 4 * 60 * 60;
 
     fn new(date: Date, hour: u8, minute: u8, second: u8) -> Self {
