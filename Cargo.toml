@@ -7,6 +7,7 @@ edition = "2021"
 backoff = { version = "0.4.0", features = ["futures"] }
 reqwest = { version = "0.12", features = ["json"], optional = true }
 serde = { version = "1.0.206", features = ["derive"] }
+time = { version = "0.3.36", optional = true }
 tracing = "0.1.40"
 url = "2.5.2"
 
@@ -14,3 +15,4 @@ url = "2.5.2"
 default = ["reqwest", "tokio"]
 reqwest = ["dep:reqwest"]
 tokio = ["backoff/tokio"]
+time = ["dep:time"]

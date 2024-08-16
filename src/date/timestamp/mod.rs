@@ -28,6 +28,15 @@ impl Timestamp {
             second,
         }
     }
+
+    #[cfg(feature = "time")]
+    pub fn time(self) -> time::OffsetDateTime {
+        let time = time::Time::from_hms(self.hour, self.minute, self.second)
+            .expect("should be valid time");
+        let offset = time::UtcOffset::from_hms(-4, 0, 0).expect("should be a valid offset");
+
+        time::OffsetDateTime::new_in_offset(self.date.time(), time, offset)
+    }
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]

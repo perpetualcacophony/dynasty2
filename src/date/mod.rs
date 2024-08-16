@@ -38,6 +38,16 @@ impl Date {
     pub fn day(&self) -> u8 {
         self.day
     }
+
+    #[cfg(feature = "time")]
+    pub fn time(self) -> time::Date {
+        time::Date::from_calendar_date(
+            self.year().into(),
+            self.month().try_into().expect("should be a valid month"),
+            self.day(),
+        )
+        .expect("should be a valid date")
+    }
 }
 
 impl FromStr for Date {
