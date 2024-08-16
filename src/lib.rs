@@ -11,4 +11,4 @@ pub mod path;
 pub use path::Path;
 
 pub mod date;
-pub use date::Date;
+pub use date::{Date, Timestamp};

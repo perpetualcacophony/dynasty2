@@ -1,6 +1,9 @@
 use std::{fmt::Display, str::FromStr};
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+mod timestamp;
+pub use timestamp::Timestamp;
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Date {
     year: u16,
     month: u8,
@@ -29,40 +32,40 @@ impl Date {
 }
 
 impl FromStr for Date {
-    type Err = ParseError;
+    type Err = ParseDateError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut split = s.splitn(3, '-');
 
         let year = split
             .next()
-            .ok_or(ParseError::Year)?
+            .ok_or(ParseDateError::Year)?
             .parse()
-            .map_err(|_| ParseError::Year)?;
+            .map_err(|_| ParseDateError::Year)?;
 
         let month = split
             .next()
-            .ok_or(ParseError::Month)?
+            .ok_or(ParseDateError::Month)?
             .parse()
-            .map_err(|_| ParseError::Month)?;
+            .map_err(|_| ParseDateError::Month)?;
 
         let day = split
             .next()
-            .ok_or(ParseError::Day)?
+            .ok_or(ParseDateError::Day)?
             .parse()
-            .map_err(|_| ParseError::Day)?;
+            .map_err(|_| ParseDateError::Day)?;
 
         Ok(Self::new(year, month, day))
     }
 }
 
-pub enum ParseError {
+pub enum ParseDateError {
     Year,
     Month,
     Day,
 }
 
-impl Display for ParseError {
+impl Display for ParseDateError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         todo!()
     }

@@ -12,7 +12,7 @@ pub use meta::ChapterMeta as Meta;
 mod page;
 pub use page::Page;
 
-use crate::Dynasty;
+use crate::{Dynasty, Timestamp};
 
 use super::TagMeta;
 
@@ -29,7 +29,7 @@ pub struct Chapter {
 
     long_title: String,
 
-    added_on: String,
+    added_on: Timestamp,
 
     pages: Vec<Page>,
 }
@@ -61,6 +61,10 @@ impl Chapter {
 
     pub fn pages(&self) -> impl Iterator<Item = &Page> {
         self.pages.iter()
+    }
+
+    pub fn added_on(&self) -> &Timestamp {
+        &self.added_on
     }
 
     pub fn long_title(&self) -> &str {
