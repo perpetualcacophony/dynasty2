@@ -21,7 +21,7 @@ impl Dynasty {
     }
 
     pub fn parse_slug(s: &str) -> Result<Slug> {
-        Ok(Slug::from_str(s)?)
+        Ok(Slug::parse(s)?)
     }
 
     pub async fn get_json<Json: serde::de::DeserializeOwned>(
