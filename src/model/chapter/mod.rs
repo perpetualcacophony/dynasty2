@@ -1,6 +1,6 @@
-mod json;
+use std::ops::Deref;
+
 use futures::{Stream, StreamExt};
-pub use json::ChapterJson as Json;
 
 pub mod index;
 pub use index::ChapterIndex as Index;
@@ -8,93 +8,63 @@ pub use index::ChapterIndex as Index;
 pub mod id;
 pub use id::ChapterId as Id;
 
+mod meta;
+pub use meta::ChapterMeta as Meta;
+
+mod page;
+pub use page::Page;
+
 use crate::Dynasty;
 
-use super::{Series, TagInternal, TagMeta};
-
-pub use json::ChapterMeta as Meta;
+use super::TagMeta;
 
 #[derive(serde::Deserialize, Clone, Debug)]
 pub struct Chapter {
     #[serde(flatten)]
-    json: Json,
+    pub meta: Meta,
+
+    pub long_title: String,
+
+    pub added_on: String,
+
+    pub pages: Vec<Page>,
+}
+
+impl Deref for Chapter {
+    type Target = Meta;
+
+    fn deref(&self) -> &Self::Target {
+        &self.meta
+    }
 }
 
 impl Chapter {
     pub async fn get(dynasty: &Dynasty, slug: &str) -> crate::Result<Self> {
-        Ok(Self {
-            json: dynasty.get_json(crate::Path::Chapter, slug).await?,
-        })
+        dynasty.get_json(crate::Path::Chapter, slug).await
     }
 
     pub async fn from_meta(dynasty: &Dynasty, meta: &Meta) -> crate::Result<Self> {
         let mut new = Self::get(dynasty, meta.slug()).await?;
 
-        new.json.meta.set_dynasty_index(meta.dynasty_index());
+        new.meta.set_dynasty_index(meta.dynasty_index());
 
         Ok(new)
     }
 
-    pub fn pages(&self) -> impl Iterator<Item = Page> {
-        self.json.pages.iter().map(|page| Page {
-            filename: &page.name,
-            permalink: &page.url,
-        })
-    }
-
-    pub fn title(&self) -> &str {
-        self.json.title()
+    pub fn pages(&self) -> impl Iterator<Item = &Page> {
+        self.pages.iter()
     }
 
     pub fn long_title(&self) -> &str {
-        self.json.long_title()
-    }
-
-    pub fn permalink(&self) -> &str {
-        self.json.slug()
+        &self.long_title
     }
 
     pub fn id(&self) -> Id {
-        Id::from_permalink(self.permalink(), self.series_tag().map(TagMeta::slug))
+        Id::from_permalink(self.slug(), self.series_tag().map(TagMeta::slug))
     }
 
     pub fn index(&self) -> Option<Index> {
         self.id().index()
-    }
-
-    pub fn series_tag(&self) -> Option<&TagMeta> {
-        self.json.tags().find(|tag| tag.is_series())
-    }
-
-    pub async fn series(&self, dynasty: &Dynasty) -> Option<crate::Result<Series>> {
-        if let Some(tag) = self.series_tag() {
-            Some(dynasty.series(tag.slug()).await)
-        } else {
-            None
-        }
-    }
-
-    pub fn tags<'a>(
-        &'a self,
-        dynasty: &'a Dynasty,
-    ) -> impl Stream<Item = crate::Result<TagInternal>> + 'a {
-        futures::stream::iter(self.json.tags()).then(|tag| tag.get(dynasty))
-    }
-}
-
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct Page<'ch> {
-    pub filename: &'ch str,
-    permalink: &'ch str,
-}
-
-impl<'ch> Page<'ch> {
-    pub fn url(&self) -> String {
-        format!(
-            "{host}{path}",
-            host = crate::Http::HOST_URL,
-            path = self.permalink
-        )
     }
 }
 
