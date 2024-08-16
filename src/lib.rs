@@ -14,7 +14,7 @@ pub mod date;
 pub use date::{Date, Timestamp};
 
 pub mod slug;
-pub use slug::Slug;
+pub use slug::{SlugOwned, Slug};
 
 pub mod link;
 pub use link::{ImageLink, Link, LinkPath};

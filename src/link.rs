@@ -26,7 +26,7 @@ impl std::fmt::Display for Link<'_> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct LinkPath<'a> {
     path: Path,
-    slug: &'a Slug,
+    slug: Slug<'a>,
 }
 
 impl<'a> LinkPath<'a> {
@@ -36,7 +36,7 @@ impl<'a> LinkPath<'a> {
             .expect("should be a valid url")
     }
 
-    pub fn new(path: Path, slug: &'a Slug) -> Self {
+    pub fn new(path: Path, slug: Slug<'a>) -> Self {
         Self { path, slug }
     }
 }

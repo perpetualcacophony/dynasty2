@@ -1,4 +1,4 @@
-use crate::{model::TagMeta, Date, Dynasty, Series, Slug};
+use crate::{model::TagMeta, Date, Dynasty, Series, Slug, SlugOwned};
 
 use super::Chapter;
 
@@ -10,7 +10,7 @@ use super::Chapter;
 pub struct ChapterMeta {
     title: String,
 
-    permalink: Slug,
+    permalink: SlugOwned,
 
     released_on: Date,
 
@@ -29,8 +29,8 @@ impl ChapterMeta {
         &self.title
     }
 
-    pub fn slug(&self) -> &Slug {
-        &self.permalink
+    pub fn slug(&self) -> Slug {
+        self.permalink.as_ref()
     }
 
     pub fn tags(&self) -> impl Iterator<Item = &TagMeta> {
@@ -55,7 +55,7 @@ impl ChapterMeta {
 
     pub async fn series(&self, dynasty: &Dynasty) -> Option<crate::Result<Series>> {
         if let Some(tag) = self.series_tag() {
-            Some(dynasty.series(tag.slug()).await)
+            Some(Series::get(dynasty, tag.slug()).await)
         } else {
             None
         }

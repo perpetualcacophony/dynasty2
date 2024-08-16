@@ -36,9 +36,10 @@ impl<'a> ChapterId<'a> {
         format!("{series}_{chapter_id}", chapter_id = self.to_dynasty())
     }
 
-    pub fn from_permalink(permalink: &'a str, series: Option<&Slug>) -> Self {
+    pub fn from_slug(slug: Slug<'a>, series: Option<Slug>) -> Self {
         if let Some(series) = series {
-            let chapter_slug = permalink
+            let chapter_slug = slug
+                .as_str()
                 .strip_prefix(&format!("{series}_"))
                 .expect("permalink should start with series");
 
@@ -48,7 +49,7 @@ impl<'a> ChapterId<'a> {
                 Self::Text(chapter_slug)
             }
         } else {
-            Self::Text(permalink)
+            Self::Text(slug.as_str())
         }
     }
 

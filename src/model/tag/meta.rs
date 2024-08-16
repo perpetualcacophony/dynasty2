@@ -1,5 +1,5 @@
 use super::Type;
-use crate::Slug;
+use crate::{Slug, SlugOwned};
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct TagMeta<Type = super::Type> {
@@ -8,7 +8,7 @@ pub struct TagMeta<Type = super::Type> {
     #[serde(rename = "type")]
     pub type_: Type,
 
-    permalink: Slug,
+    permalink: SlugOwned,
 }
 
 impl<T> TagMeta<T> {
@@ -16,8 +16,8 @@ impl<T> TagMeta<T> {
         &self.name
     }
 
-    pub fn slug(&self) -> &Slug {
-        &self.permalink
+    pub fn slug(&self) -> Slug {
+        self.permalink.as_ref()
     }
 
     pub fn is_series(&self) -> bool
