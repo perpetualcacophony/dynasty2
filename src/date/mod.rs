@@ -48,6 +48,12 @@ impl Date {
         )
         .expect("should be a valid date")
     }
+
+    #[cfg(feature = "chrono")]
+    pub fn chrono(self) -> chrono::NaiveDate {
+        chrono::NaiveDate::from_ymd_opt(self.year().into(), self.month().into(), self.day().into())
+            .expect("date should be valid")
+    }
 }
 
 impl FromStr for Date {

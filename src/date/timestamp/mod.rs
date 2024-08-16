@@ -19,6 +19,7 @@ pub struct Timestamp {
 
 impl Timestamp {
     const OFFSET_STR: &str = "-04:00";
+    const OFFSET_SECS: u16 = 4 * 60 * 60;
 
     pub fn new(date: Date, hour: u8, minute: u8, second: u8) -> Self {
         Self {
@@ -29,13 +30,42 @@ impl Timestamp {
         }
     }
 
+    pub fn hour(&self) -> u8 {
+        self.hour
+    }
+
+    pub fn minute(&self) -> u8 {
+        self.minute
+    }
+
+    pub fn second(&self) -> u8 {
+        self.second
+    }
+
     #[cfg(feature = "time")]
     pub fn time(self) -> time::OffsetDateTime {
-        let time = time::Time::from_hms(self.hour, self.minute, self.second)
+        let time = time::Time::from_hms(self.hour(), self.minute(), self.second())
             .expect("should be valid time");
         let offset = time::UtcOffset::from_hms(-4, 0, 0).expect("should be a valid offset");
 
         time::OffsetDateTime::new_in_offset(self.date.time(), time, offset)
+    }
+
+    #[cfg(feature = "chrono")]
+    pub fn chrono(self) -> chrono::DateTime<chrono::FixedOffset> {
+        let time = chrono::NaiveTime::from_hms_opt(
+            self.hour().into(),
+            self.minute().into(),
+            self.second().into(),
+        )
+        .expect("should be valid time");
+
+        let naive = chrono::NaiveDateTime::new(self.date.chrono(), time);
+
+        let offset = chrono::FixedOffset::west_opt(Self::OFFSET_SECS.into())
+            .expect("offset should be valid");
+
+        chrono::DateTime::from_naive_utc_and_offset(naive, offset)
     }
 }
 

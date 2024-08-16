@@ -5,7 +5,8 @@ edition = "2021"
 
 [dependencies]
 backoff = { version = "0.4.0", features = ["futures"] }
-reqwest = { version = "0.12", features = ["json"], optional = true }
+chrono = { version = "0.4.38", default-features = false, optional = true }
+reqwest = { version = "0.12.5", features = ["json"], optional = true }
 serde = { version = "1.0.206", features = ["derive"] }
 time = { version = "0.3.36", optional = true, default-features = false }
 tracing = "0.1.40"
@@ -16,3 +17,4 @@ default = ["reqwest", "tokio"]
 reqwest = ["dep:reqwest"]
 tokio = ["backoff/tokio"]
 time = ["dep:time"]
+chrono = ["dep:chrono"]
