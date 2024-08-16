@@ -1,5 +1,9 @@
 use crate::model::ChapterMeta;
 
+/// Represents either a volume header or metadata for a chapter.
+///
+/// The Dynasty API returns volume headers and chapter metadata
+/// in the same array, requiring this wrapper type.
 #[derive(serde::Deserialize, Clone, Debug, Hash, PartialEq, Eq)]
 #[serde(untagged)]
 pub enum SeriesTagging {

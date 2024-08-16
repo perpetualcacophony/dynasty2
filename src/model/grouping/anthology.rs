@@ -7,6 +7,7 @@ use crate::{
 
 use super::Inner;
 
+/// A collection of chapters by various authors.
 #[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Anthology {
     #[serde(flatten)]

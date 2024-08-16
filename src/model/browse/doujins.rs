@@ -7,6 +7,7 @@ use crate::{
 
 use super::Inner;
 
+/// Self-published chapters based on an existing property.
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Doujins {
     #[serde(flatten)]

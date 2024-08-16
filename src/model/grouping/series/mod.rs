@@ -12,6 +12,7 @@ pub use tagging::SeriesTagging as Tagging;
 mod volume;
 pub use volume::Volume;
 
+/// A collection of chapters organized in volumes, following a narrative.
 #[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Series {
     #[serde(flatten)]
@@ -21,12 +22,22 @@ pub struct Series {
 }
 
 impl Series {
+    /// Requests a `Series` with the given slug.
+    ///
+    /// This method is semantically equivalent to
+    /// `https://dynasty-scans.com/series/{slug}`
     pub async fn get(dynasty: &Dynasty, slug: &str) -> crate::Result<Self> {
         dynasty
             .get_json(crate::Path::Tag(TagType::Series), slug)
             .await
     }
 
+    /// Returns volume headers and chapter metadata in the layout
+    /// directly received from Dynasty.
+    ///
+    /// This method is highly cumbersome, and most users will be better
+    /// served by [`Series::volumes`] for organizing chapters into volumes
+    /// or [`Series::chapters`] for simply iterating through all chapters.
     pub fn taggings(&self) -> impl Iterator<Item = &Tagging> {
         self.taggings.iter()
     }

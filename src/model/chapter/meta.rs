@@ -1,12 +1,18 @@
 use crate::{model::TagMeta, Dynasty, Series};
 
+use super::Chapter;
+
+/// Minimal detail about a chapter, included in other responses.
+///
+/// A full [`Chapter`] response can be requested using [`ChapterMeta::chapter`].
+/// `Chapter` dereferences to this type, and gets these methods for free.
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct ChapterMeta {
     title: String,
 
     permalink: String,
 
-    pub released_on: String,
+    released_on: String,
 
     dynasty_index: Option<usize>,
 
@@ -14,6 +20,11 @@ pub struct ChapterMeta {
 }
 
 impl ChapterMeta {
+    /// Requests a complete [`Chapter`] using this metadata.
+    pub async fn chapter(&self, dynasty: &Dynasty) -> crate::Result<Chapter> {
+        Chapter::from_meta(dynasty, self).await
+    }
+
     pub fn title(&self) -> &str {
         &self.title
     }

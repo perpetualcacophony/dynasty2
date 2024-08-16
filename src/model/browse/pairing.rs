@@ -4,6 +4,7 @@ use crate::Dynasty;
 
 use super::Inner;
 
+/// A tag representing a romantic relationship.
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Pairing {
     #[serde(flatten)]

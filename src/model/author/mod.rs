@@ -4,6 +4,7 @@ use crate::Dynasty;
 
 use super::{ChapterMeta, GroupingMeta, TagInternal};
 
+/// Represents the creator of select chapters and narratives.
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Author {
     #[serde(flatten)]

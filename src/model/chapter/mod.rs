@@ -16,16 +16,22 @@ use crate::Dynasty;
 
 use super::TagMeta;
 
+/// Represents a single manga chapter.
+///
+/// Dynasty internally refers to chapters as 'taggings.'
+///
+/// This type dereferences to [`ChapterMeta`](meta::ChapterMeta), which provides methods
+/// for basic data access.
 #[derive(serde::Deserialize, Clone, Debug)]
 pub struct Chapter {
     #[serde(flatten)]
-    pub meta: Meta,
+    meta: Meta,
 
-    pub long_title: String,
+    long_title: String,
 
-    pub added_on: String,
+    added_on: String,
 
-    pub pages: Vec<Page>,
+    pages: Vec<Page>,
 }
 
 impl Deref for Chapter {
@@ -37,6 +43,10 @@ impl Deref for Chapter {
 }
 
 impl Chapter {
+    /// Requests a `Chapter` with the given slug.
+    ///
+    /// This method is semantically equivalent to
+    /// `https://dynasty-scans.com/chapter/{slug}`
     pub async fn get(dynasty: &Dynasty, slug: &str) -> crate::Result<Self> {
         dynasty.get_json(crate::Path::Chapter, slug).await
     }

@@ -4,6 +4,7 @@ use crate::{model::ChapterMeta, Dynasty};
 
 use super::{Pages, Tag};
 
+/// Represents a single scanlator or scanlation group and their translated chapters.
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Scanlator {
     #[serde(flatten)]
