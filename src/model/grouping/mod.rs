@@ -6,6 +6,9 @@ pub use series::{Series, Tagging as SeriesTagging};
 mod anthology;
 pub use anthology::Anthology;
 
+mod issue;
+pub use issue::Issue;
+
 mod meta;
 pub use meta::GroupingMeta as Meta;
 

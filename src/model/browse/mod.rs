@@ -12,3 +12,6 @@ pub use tag::Tag;
 
 mod pairing;
 pub use pairing::Pairing;
+
+mod doujins;
+pub use doujins::Doujins;

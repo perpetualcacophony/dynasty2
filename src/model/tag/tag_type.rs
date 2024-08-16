@@ -7,6 +7,8 @@ pub enum TagType {
     Scanlator,
     Pairing,
     Doujin,
+    Status,
+    Issue,
 }
 
 impl TagType {
@@ -19,6 +21,8 @@ impl TagType {
             "Pairing" => Ok(Self::Pairing),
             "Doujin" => Ok(Self::Doujin),
             "Anthology" => Ok(Self::Anthology),
+            "Status" => Ok(Self::Status),
+            "Issue" => Ok(Self::Issue),
             _ => Err(s),
         }
     }
@@ -32,6 +36,8 @@ impl TagType {
             Self::Pairing => "pairings",
             Self::General => "tags",
             Self::Anthology => "anthologies",
+            Self::Issue => "issues",
+            Self::Status => unreachable!(),
         }
     }
 

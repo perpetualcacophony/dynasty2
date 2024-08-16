@@ -1,11 +1,11 @@
 use std::ops::Deref;
 
-use crate::model::Tag;
+use crate::model::{GroupingMeta, Tag};
 
 use super::{Items, Pages};
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct BrowseInner {
+pub struct BrowseInner<Taggable = GroupingMeta> {
     #[serde(flatten)]
     tag: Tag,
 
@@ -13,10 +13,10 @@ pub struct BrowseInner {
     pages: Pages,
 
     #[serde(flatten)]
-    items: Items,
+    items: Items<Taggable>,
 }
 
-impl Deref for BrowseInner {
+impl<T> Deref for BrowseInner<T> {
     type Target = Tag;
 
     fn deref(&self) -> &Self::Target {
