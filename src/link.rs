@@ -58,7 +58,7 @@ pub struct ImageLink {
 
 impl ImageLink {
     pub fn from_string(s: String) -> Option<Self> {
-        if s.starts_with('/') {
+        if s.starts_with("/system/") {
             Some(Self { inner: s })
         } else {
             None

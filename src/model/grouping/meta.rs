@@ -17,8 +17,8 @@ impl GroupingMeta {
         &self.type_
     }
 
-    pub fn cover(&self) -> &ImageLink {
-        &self.cover
+    pub fn cover(&self) -> url::Url {
+        self.cover.url()
     }
 }
 
