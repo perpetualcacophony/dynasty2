@@ -12,3 +12,6 @@ pub use path::Path;
 
 pub mod date;
 pub use date::{Date, Timestamp};
+
+pub mod slug;
+pub use slug::Slug;
