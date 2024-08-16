@@ -1,7 +1,10 @@
-use std::{fmt::Display, str::FromStr};
+use std::{num::ParseIntError, str::FromStr};
 
 mod timestamp;
 pub use timestamp::Timestamp;
+
+mod error;
+pub use error::ParseDateError as ParseError;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Date {
@@ -32,42 +35,28 @@ impl Date {
 }
 
 impl FromStr for Date {
-    type Err = ParseDateError;
+    type Err = ParseError;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let mut split = s.splitn(3, '-');
 
-        let year = split
-            .next()
-            .ok_or(ParseDateError::Year)?
-            .parse()
-            .map_err(|_| ParseDateError::Year)?;
+        fn get_field<'a, T: FromStr<Err = ParseIntError>>(
+            s: &str,
+            split: &mut impl Iterator<Item = &'a str>,
+            field: DateField,
+        ) -> Result<T, ParseError> {
+            split
+                .next()
+                .ok_or_else(|| ParseError::missing_field(s, field))?
+                .parse()
+                .map_err(|err| ParseError::parse_field(s, err, field))
+        }
 
-        let month = split
-            .next()
-            .ok_or(ParseDateError::Month)?
-            .parse()
-            .map_err(|_| ParseDateError::Month)?;
-
-        let day = split
-            .next()
-            .ok_or(ParseDateError::Day)?
-            .parse()
-            .map_err(|_| ParseDateError::Day)?;
+        let year = get_field(s, &mut split, DateField::Year)?;
+        let month = get_field(s, &mut split, DateField::Month)?;
+        let day = get_field(s, &mut split, DateField::Day)?;
 
         Ok(Self::new(year, month, day))
-    }
-}
-
-pub enum ParseDateError {
-    Year,
-    Month,
-    Day,
-}
-
-impl Display for ParseDateError {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        todo!()
     }
 }
 
@@ -78,5 +67,37 @@ impl<'de> serde::Deserialize<'de> for Date {
     {
         let s = <&str>::deserialize(deserializer)?;
         Self::from_str(s).map_err(serde::de::Error::custom)
+    }
+}
+
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+pub enum DateField {
+    Year,
+    Month,
+    Day,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Date;
+
+    mod from_str {
+        use crate::date::{DateField, ParseError};
+
+        use super::Date;
+        use std::str::FromStr;
+
+        #[test]
+        fn valid_date() {
+            assert_eq!(Date::from_str("2023-09-07"), Ok(Date::new(2023, 9, 7)))
+        }
+
+        #[test]
+        fn invalid_date() {
+            assert_eq!(
+                Date::from_str("2023-09"),
+                Err(ParseError::missing_field("2023-09", DateField::Day))
+            )
+        }
     }
 }
