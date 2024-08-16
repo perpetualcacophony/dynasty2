@@ -1,12 +1,6 @@
+use super::Meta;
+use crate::model::{TagInternal, TagMeta};
 use std::ops::Deref;
-
-use crate::Dynasty;
-use crate::{
-    model::{TagInternal, TagMeta},
-    Slug,
-};
-
-use super::{Kind, Meta};
 
 #[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct GroupingInner {
@@ -17,10 +11,6 @@ pub struct GroupingInner {
 }
 
 impl GroupingInner {
-    pub async fn get(dynasty: &Dynasty, kind: Kind, slug: &Slug) -> crate::Result<Self> {
-        dynasty.get_json(crate::Path::Tag(kind.into()), slug).await
-    }
-
     pub fn title(&self) -> &str {
         self.name()
     }

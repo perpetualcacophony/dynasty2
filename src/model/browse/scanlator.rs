@@ -26,9 +26,7 @@ impl Deref for Scanlator {
 
 impl Scanlator {
     pub async fn get(dynasty: &Dynasty, slug: &Slug) -> crate::Result<Self> {
-        dynasty
-            .get_json(crate::Path::Tag(crate::model::TagType::Scanlator), slug)
-            .await
+        dynasty.get_json(crate::Path::Scanlators, slug).await
     }
 
     pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {

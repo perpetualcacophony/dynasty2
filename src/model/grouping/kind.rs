@@ -1,4 +1,4 @@
-use crate::model::TagType;
+use crate::{model::TagType, Path};
 
 #[derive(Clone, Debug, PartialEq, Eq, Copy, Hash)]
 pub enum GroupingKind {
@@ -11,12 +11,11 @@ impl GroupingKind {
         TagType::parse(s)?.try_into().map_err(|_| s)
     }
 
-    pub fn path(&self) -> &'static str {
-        TagType::from(self).path()
-    }
-
-    pub fn permalink(&self, slug: &str) -> String {
-        TagType::from(self).permalink(slug)
+    pub fn path(&self) -> Path {
+        match self {
+            Self::Anthology => Path::Anthologies,
+            Self::Series => Path::Series,
+        }
     }
 }
 

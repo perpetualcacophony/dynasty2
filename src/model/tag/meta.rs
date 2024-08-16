@@ -1,6 +1,5 @@
-use crate::{Dynasty, Slug};
-
-use super::{TagInternal, Type};
+use super::Type;
+use crate::Slug;
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct TagMeta<Type = super::Type> {
@@ -30,19 +29,5 @@ impl<T> TagMeta<T> {
 
     pub fn is_crossover(&self) -> bool {
         self.slug() == "crossover"
-    }
-}
-
-impl TagMeta {
-    pub fn permalink(&self) -> String {
-        format!(
-            "{path}/{slug}",
-            path = self.type_.path(),
-            slug = self.slug()
-        )
-    }
-
-    pub async fn get(&self, dynasty: &Dynasty) -> crate::Result<TagInternal> {
-        TagInternal::get(dynasty, self.type_, self.slug()).await
     }
 }

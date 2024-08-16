@@ -1,3 +1,4 @@
+use crate::LinkPath;
 use std::fmt::Display;
 
 #[derive(Default, Clone, Debug)]
@@ -17,15 +18,14 @@ impl Http {
         url::Url::parse(Self::HOST_URL).expect("host url should be valid")
     }
 
-    pub fn construct_url(permalink: &str) -> Result<url::Url, url::ParseError> {
-        Self::host_url().join(permalink)
-    }
-
     #[cfg(feature = "reqwest")]
     #[tracing::instrument(skip(self))]
-    pub async fn json<Json: serde::de::DeserializeOwned>(&self, permalink: &str) -> Result<Json> {
-        let mut url = Self::construct_url(permalink).unwrap();
-        url.set_path(&format!("{permalink}.json"));
+    pub async fn json<Json: serde::de::DeserializeOwned>(
+        &self,
+        link: LinkPath<'_>,
+    ) -> Result<Json> {
+        let mut url = link.url();
+        url.set_path(&format!("{}.json", url.path()));
         tracing::debug!(%url);
 
         let json: Result<Json> = backoff::future::retry_notify(
@@ -40,7 +40,7 @@ impl Http {
                     .json::<Json>()
                     .await
                     .map_err(|err| JsonError {
-                        path: permalink.to_owned(),
+                        path: link.to_string(),
                         client: err.into(),
                     })
                     .map_err(Error::from)?)

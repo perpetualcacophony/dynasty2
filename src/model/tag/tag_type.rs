@@ -26,24 +26,6 @@ impl TagType {
             _ => Err(s),
         }
     }
-
-    pub fn path(&self) -> &'static str {
-        match self {
-            Self::Author => "authors",
-            Self::Doujin => "doujins",
-            Self::Series => "series",
-            Self::Scanlator => "scanlators",
-            Self::Pairing => "pairings",
-            Self::General => "tags",
-            Self::Anthology => "anthologies",
-            Self::Issue => "issues",
-            Self::Status => unreachable!(),
-        }
-    }
-
-    pub fn permalink(&self, slug: &str) -> String {
-        format!("{path}/{slug}", path = self.path())
-    }
 }
 
 impl<'a> TryFrom<&'a str> for TagType {

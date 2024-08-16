@@ -12,9 +12,7 @@ pub struct Tag {
 
 impl Tag {
     pub async fn get(dynasty: &Dynasty, slug: &Slug) -> crate::Result<Self> {
-        dynasty
-            .get_json(crate::Path::Tag(crate::model::TagType::General), slug)
-            .await
+        dynasty.get_json(crate::Path::Tags, slug).await
     }
 }
 

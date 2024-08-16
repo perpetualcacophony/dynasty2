@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use crate::model::TagMeta;
+use crate::{model::TagMeta, ImageLink};
 
 use super::Kind;
 
@@ -9,7 +9,7 @@ pub struct GroupingMeta {
     #[serde(rename = "type", flatten)]
     tag: TagMeta<Kind>,
 
-    cover: String,
+    cover: ImageLink,
 }
 
 impl GroupingMeta {
@@ -17,7 +17,7 @@ impl GroupingMeta {
         &self.type_
     }
 
-    pub fn cover(&self) -> &str {
+    pub fn cover(&self) -> &ImageLink {
         &self.cover
     }
 }

@@ -48,7 +48,7 @@ impl Chapter {
     /// This method is semantically equivalent to
     /// `https://dynasty-scans.com/chapter/{slug}`
     pub async fn get(dynasty: &Dynasty, slug: &Slug) -> crate::Result<Self> {
-        dynasty.get_json(crate::Path::Chapter, slug).await
+        dynasty.get_json(crate::Path::Chapters, slug).await
     }
 
     pub async fn from_meta(dynasty: &Dynasty, meta: &Meta) -> crate::Result<Self> {

@@ -1,11 +1,6 @@
-use std::ops::Deref;
-
-use crate::{
-    model::{ChapterMeta, TagType},
-    Dynasty, Slug,
-};
-
 use super::Inner;
+use crate::{model::ChapterMeta, Dynasty, Slug};
+use std::ops::Deref;
 
 /// A collection of chapters by various authors.
 #[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
@@ -18,9 +13,7 @@ pub struct Anthology {
 
 impl Anthology {
     pub async fn get(dynasty: &Dynasty, slug: &Slug) -> crate::Result<Self> {
-        dynasty
-            .get_json(crate::Path::Tag(TagType::Anthology), slug)
-            .await
+        dynasty.get_json(crate::Path::Anthologies, slug).await
     }
 
     pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {

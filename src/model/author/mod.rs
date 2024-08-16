@@ -17,9 +17,7 @@ pub struct Author {
 
 impl Author {
     pub async fn get(dynasty: &Dynasty, slug: &Slug) -> crate::Result<Self> {
-        dynasty
-            .get_json(crate::Path::Tag(crate::model::TagType::Author), slug)
-            .await
+        dynasty.get_json(crate::Path::Authors, slug).await
     }
 
     pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {

@@ -1,9 +1,6 @@
 use std::ops::Deref;
 
-use crate::{
-    model::{ChapterMeta, TagType},
-    Dynasty, Slug,
-};
+use crate::{model::ChapterMeta, Dynasty, Slug};
 
 use super::Inner;
 
@@ -17,9 +14,7 @@ pub struct Issue {
 
 impl Issue {
     pub async fn get(dynasty: &Dynasty, slug: &Slug) -> crate::Result<Self> {
-        dynasty
-            .get_json(crate::Path::Tag(TagType::Issue), slug)
-            .await
+        dynasty.get_json(crate::Path::Issues, slug).await
     }
 
     pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {

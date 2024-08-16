@@ -4,8 +4,6 @@ use super::Inner;
 
 use crate::{model::ChapterMeta, Dynasty, Slug};
 
-use crate::model::TagType;
-
 mod tagging;
 pub use tagging::SeriesTagging as Tagging;
 
@@ -27,9 +25,7 @@ impl Series {
     /// This method is semantically equivalent to
     /// `https://dynasty-scans.com/series/{slug}`
     pub async fn get(dynasty: &Dynasty, slug: &Slug) -> crate::Result<Self> {
-        dynasty
-            .get_json(crate::Path::Tag(TagType::Series), slug)
-            .await
+        dynasty.get_json(crate::Path::Series, slug).await
     }
 
     /// Returns volume headers and chapter metadata in the layout

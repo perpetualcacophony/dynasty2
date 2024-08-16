@@ -3,7 +3,7 @@ use std::fmt::Display;
 use crate::{
     http,
     model::{Doujins, Scanlator, Series},
-    Author, Chapter, Http, Pairing, Path, Slug, Tag,
+    Author, Chapter, Http, LinkPath, Pairing, Path, Slug, Tag,
 };
 
 #[derive(Default, Clone, Debug)]
@@ -25,7 +25,7 @@ impl Dynasty {
         path: Path,
         slug: &Slug,
     ) -> Result<Json> {
-        Ok(self.http().json(&path.permalink(slug)).await?)
+        Ok(self.http().json(LinkPath::new(path, slug)).await?)
     }
 
     pub async fn chapter(&self, slug: &Slug) -> Result<Chapter> {
