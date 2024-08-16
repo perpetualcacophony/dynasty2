@@ -2,10 +2,7 @@ use std::ops::Deref;
 
 use super::Inner;
 
-use crate::{
-    model::{ChapterMeta, Chapters},
-    Dynasty,
-};
+use crate::{model::ChapterMeta, Dynasty};
 
 use crate::model::TagType;
 
@@ -71,8 +68,8 @@ impl Series {
     }
 
     #[tracing::instrument(skip_all)]
-    pub fn chapters(&self) -> Chapters<impl Iterator<Item = &ChapterMeta>> {
-        Chapters::new(self.taggings().filter_map(Tagging::chapter))
+    pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
+        self.taggings().filter_map(Tagging::chapter)
     }
 }
 

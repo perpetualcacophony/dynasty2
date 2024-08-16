@@ -1,7 +1,5 @@
 use std::ops::Deref;
 
-use futures::{Stream, StreamExt};
-
 pub mod index;
 pub use index::ChapterIndex as Index;
 
@@ -65,42 +63,5 @@ impl Chapter {
 
     pub fn index(&self) -> Option<Index> {
         self.id().index()
-    }
-}
-
-pub struct Chapters<'a, It = std::slice::Iter<'a, Meta>> {
-    iter: It,
-    phantom: std::marker::PhantomData<&'a ()>,
-}
-
-impl<'a, It> Chapters<'a, It>
-where
-    It: Iterator<Item = &'a Meta> + 'a,
-{
-    pub fn new(iter: impl IntoIterator<IntoIter = It>) -> Self {
-        Self {
-            iter: iter.into_iter(),
-            phantom: std::marker::PhantomData,
-        }
-    }
-
-    pub fn meta(self) -> It {
-        self.iter
-    }
-
-    pub fn stream(self, dynasty: &'a Dynasty) -> impl Stream<Item = crate::Result<Chapter>> + 'a {
-        futures::stream::iter(self).then(|meta| Chapter::from_meta(dynasty, meta))
-    }
-}
-
-impl<'a, It> IntoIterator for Chapters<'a, It>
-where
-    It: Iterator<Item = &'a Meta> + 'a,
-{
-    type Item = &'a Meta;
-    type IntoIter = It;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.meta()
     }
 }

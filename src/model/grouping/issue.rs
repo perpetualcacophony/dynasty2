@@ -1,7 +1,7 @@
 use std::ops::Deref;
 
 use crate::{
-    model::{ChapterMeta, Chapters, TagType},
+    model::{ChapterMeta, TagType},
     Dynasty,
 };
 
@@ -22,8 +22,8 @@ impl Issue {
             .await
     }
 
-    pub fn chapters(&self) -> Chapters {
-        Chapters::new(&self.taggings)
+    pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
+        self.taggings.iter()
     }
 }
 

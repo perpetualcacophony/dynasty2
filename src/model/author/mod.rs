@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use crate::Dynasty;
 
-use super::{ChapterMeta, Chapters, GroupingMeta, TagInternal};
+use super::{ChapterMeta, GroupingMeta, TagInternal};
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Author {
@@ -21,8 +21,8 @@ impl Author {
             .await
     }
 
-    pub fn chapters(&self) -> Chapters {
-        Chapters::new(&self.taggings)
+    pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
+        self.taggings.iter()
     }
 
     pub fn series(&self) -> impl Iterator<Item = &GroupingMeta> {
