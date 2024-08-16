@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 #[derive(Default, Clone, Debug)]
 pub struct Http {
     #[cfg(feature = "reqwest")]
@@ -26,8 +28,9 @@ impl Http {
         url.set_path(&format!("{permalink}.json"));
         tracing::debug!(%url);
 
-        let json: Result<Json> =
-            backoff::future::retry(backoff::ExponentialBackoff::default(), || async {
+        let json: Result<Json> = backoff::future::retry_notify(
+            backoff::ExponentialBackoff::default(),
+            || async {
                 Ok(self
                     .reqwest
                     .get(url.as_str())
@@ -41,8 +44,10 @@ impl Http {
                         client: err.into(),
                     })
                     .map_err(Error::from)?)
-            })
-            .await;
+            },
+            |err, time| tracing::warn!(?err),
+        )
+        .await;
 
         let json = json?;
 
@@ -58,10 +63,25 @@ pub enum Error {
     Json(JsonError),
 }
 
+impl Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Client(client) => client.fmt(f),
+            Self::Json(json) => json.fmt(f),
+        }
+    }
+}
+
 #[derive(Debug)]
 pub struct JsonError {
     path: String,
     client: ClientError,
+}
+
+impl std::fmt::Display for JsonError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        self.client.fmt(f)
+    }
 }
 
 #[derive(Debug)]

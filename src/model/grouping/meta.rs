@@ -6,7 +6,7 @@ use super::Kind;
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct GroupingMeta {
-    #[serde(rename = "type")]
+    #[serde(rename = "type", flatten)]
     tag: TagMeta<Kind>,
 
     cover: String,

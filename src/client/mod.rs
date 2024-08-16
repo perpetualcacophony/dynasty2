@@ -1,3 +1,5 @@
+use std::fmt::Display;
+
 use crate::{
     http,
     model::{Doujins, Scanlator, Series},
@@ -66,5 +68,14 @@ pub enum Error {
 impl From<http::Error> for Error {
     fn from(value: http::Error) -> Self {
         Self::Http(value)
+    }
+}
+
+impl Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Http(http) => http.fmt(f),
+            Self::ParseTag => f.write_str("bwaa"),
+        }
     }
 }

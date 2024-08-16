@@ -10,8 +10,6 @@ pub struct GroupingInner {
     #[serde(flatten)]
     pub tag: TagInternal<Meta>,
 
-    pub cover: String,
-
     pub description: Option<String>,
 }
 

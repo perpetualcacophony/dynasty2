@@ -14,7 +14,9 @@ use super::{Series, TagInternal, TagMeta};
 
 pub use json::ChapterMeta as Meta;
 
+#[derive(serde::Deserialize, Clone, Debug)]
 pub struct Chapter {
+    #[serde(flatten)]
     json: Json,
 }
 
@@ -41,7 +43,11 @@ impl Chapter {
     }
 
     pub fn title(&self) -> &str {
-        &self.json.meta.title
+        self.json.title()
+    }
+
+    pub fn long_title(&self) -> &str {
+        self.json.long_title()
     }
 
     pub fn permalink(&self) -> &str {
@@ -76,6 +82,7 @@ impl Chapter {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Page<'ch> {
     pub filename: &'ch str,
     permalink: &'ch str,

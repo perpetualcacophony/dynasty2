@@ -71,7 +71,7 @@ impl Series {
     }
 
     #[tracing::instrument(skip_all)]
-    pub async fn chapters(&self) -> Chapters<impl Iterator<Item = &ChapterMeta>> {
+    pub fn chapters(&self) -> Chapters<impl Iterator<Item = &ChapterMeta>> {
         Chapters::new(self.taggings().filter_map(Tagging::chapter))
     }
 }

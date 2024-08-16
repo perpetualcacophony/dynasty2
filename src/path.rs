@@ -8,7 +8,7 @@ pub enum Path {
 impl Path {
     pub fn as_str(&self) -> &'static str {
         match self {
-            Self::Chapter => "chapter",
+            Self::Chapter => "chapters",
             Self::Tag(tag) => tag.path(),
         }
     }

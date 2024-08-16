@@ -16,6 +16,10 @@ impl ChapterJson {
     pub fn tags(&self) -> impl Iterator<Item = &TagMeta> {
         self.meta.tags.iter()
     }
+
+    pub fn long_title(&self) -> &str {
+        &self.long_title
+    }
 }
 
 impl Deref for ChapterJson {
@@ -34,7 +38,7 @@ pub struct PageJson {
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct ChapterMeta {
-    pub title: String,
+    title: String,
 
     permalink: String,
 
@@ -46,6 +50,10 @@ pub struct ChapterMeta {
 }
 
 impl ChapterMeta {
+    pub fn title(&self) -> &str {
+        &self.title
+    }
+
     pub fn slug(&self) -> &str {
         &self.permalink
     }
