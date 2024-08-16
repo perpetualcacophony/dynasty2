@@ -17,10 +17,18 @@ impl Pairing {
             .await
     }
 
-    pub fn partners(&self) -> (&str, &str) {
-        self.name()
-            .split_once(" x ")
-            .expect("pairing tag should be named {partner} x {partner}")
+    pub fn partners(&self) -> impl Iterator<Item = &str> {
+        self.name().split(" x ")
+    }
+
+    pub fn couple(&self) -> Option<[&str; 2]> {
+        if self.partners().count() > 2 {
+            return None;
+        }
+
+        let mut partners = self.partners();
+
+        Some([partners.next()?, partners.next()?])
     }
 }
 
