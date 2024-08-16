@@ -36,9 +36,11 @@ pub struct PageJson {
 pub struct ChapterMeta {
     pub title: String,
 
-    pub permalink: String,
+    permalink: String,
 
     pub released_on: String,
+
+    dynasty_index: Option<usize>,
 
     pub tags: Vec<TagMeta>,
 }
@@ -46,5 +48,17 @@ pub struct ChapterMeta {
 impl ChapterMeta {
     pub fn slug(&self) -> &str {
         &self.permalink
+    }
+
+    pub fn tags(&self) -> impl Iterator<Item = &TagMeta> {
+        self.tags.iter()
+    }
+
+    pub fn dynasty_index(&self) -> Option<usize> {
+        self.dynasty_index
+    }
+
+    pub fn set_dynasty_index(&mut self, index: Option<usize>) {
+        self.dynasty_index = index
     }
 }

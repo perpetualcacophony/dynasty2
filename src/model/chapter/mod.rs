@@ -16,19 +16,21 @@ pub use json::ChapterMeta as Meta;
 
 pub struct Chapter {
     json: Json,
-    pub dynasty_index: Option<usize>,
 }
 
 impl Chapter {
     pub async fn get(dynasty: &Dynasty, slug: &str) -> crate::Result<Self> {
         Ok(Self {
             json: dynasty.get_json(crate::Path::Chapter, slug).await?,
-            dynasty_index: None,
         })
     }
 
     pub async fn from_meta(dynasty: &Dynasty, meta: &Meta) -> crate::Result<Self> {
-        Self::get(dynasty, meta.slug()).await
+        let mut new = Self::get(dynasty, meta.slug()).await?;
+
+        new.json.meta.set_dynasty_index(meta.dynasty_index());
+
+        Ok(new)
     }
 
     pub fn pages(&self) -> impl Iterator<Item = Page> {
@@ -43,11 +45,7 @@ impl Chapter {
     }
 
     pub fn permalink(&self) -> &str {
-        &self.json.meta.permalink
-    }
-
-    pub fn set_dynasty_index(&mut self, index: usize) {
-        self.dynasty_index = Some(index)
+        self.json.slug()
     }
 
     pub fn id(&self) -> Id {
@@ -87,5 +85,42 @@ impl<'ch> Page<'ch> {
             host = crate::Http::HOST_URL,
             path = self.permalink
         )
+    }
+}
+
+pub struct Chapters<'a, It = std::slice::Iter<'a, Meta>> {
+    iter: It,
+    phantom: std::marker::PhantomData<&'a ()>,
+}
+
+impl<'a, It> Chapters<'a, It>
+where
+    It: Iterator<Item = &'a Meta> + 'a,
+{
+    pub fn new(iter: impl IntoIterator<IntoIter = It>) -> Self {
+        Self {
+            iter: iter.into_iter(),
+            phantom: std::marker::PhantomData,
+        }
+    }
+
+    pub fn meta(self) -> It {
+        self.iter
+    }
+
+    pub fn stream(self, dynasty: &'a Dynasty) -> impl Stream<Item = crate::Result<Chapter>> + 'a {
+        futures::stream::iter(self).then(|meta| Chapter::from_meta(dynasty, meta))
+    }
+}
+
+impl<'a, It> IntoIterator for Chapters<'a, It>
+where
+    It: Iterator<Item = &'a Meta> + 'a,
+{
+    type Item = &'a Meta;
+    type IntoIter = It;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.meta()
     }
 }
