@@ -4,7 +4,7 @@ use super::DateField;
 
 #[derive(Debug, PartialEq)]
 pub struct ParseDateError {
-    pub(super) input: Box<str>,
+    input: Box<str>,
     kind: ParseDateErrorKind,
 }
 

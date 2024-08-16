@@ -2,7 +2,7 @@ use std::{num::ParseIntError, str::FromStr};
 
 use super::{Date, ParseError as ParseDateError};
 
-mod error;
+pub mod error;
 pub use error::ParseTimestampError as ParseError;
 
 /// Represents a specific time on a given date with second precision.

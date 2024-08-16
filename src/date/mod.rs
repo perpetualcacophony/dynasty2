@@ -1,9 +1,9 @@
 use std::{num::ParseIntError, str::FromStr};
 
-mod timestamp;
+pub mod timestamp;
 pub use timestamp::Timestamp;
 
-mod error;
+pub mod error;
 pub use error::ParseDateError as ParseError;
 
 /// Represents a specific date.
