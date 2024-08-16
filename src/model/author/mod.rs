@@ -2,12 +2,12 @@ use std::ops::Deref;
 
 use crate::Dynasty;
 
-use super::{ChapterMeta, Chapters, GroupingMeta, Tag};
+use super::{ChapterMeta, Chapters, GroupingMeta, TagInternal};
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Author {
     #[serde(flatten)]
-    tag: Tag,
+    tag: TagInternal,
 
     taggings: Vec<ChapterMeta>,
 
@@ -31,7 +31,7 @@ impl Author {
 }
 
 impl Deref for Author {
-    type Target = Tag;
+    type Target = TagInternal;
 
     fn deref(&self) -> &Self::Target {
         &self.tag

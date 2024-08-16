@@ -15,7 +15,7 @@ use std::ops::Deref;
 use crate::Dynasty;
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct Tag<Meta = meta::TagMeta> {
+pub struct TagInternal<Meta = meta::TagMeta> {
     #[serde(flatten)]
     meta: Meta,
 
@@ -24,13 +24,13 @@ pub struct Tag<Meta = meta::TagMeta> {
     aliases: Vec<String>,
 }
 
-impl Tag {
+impl TagInternal {
     pub async fn get(dynasty: &Dynasty, tag_type: Type, slug: &str) -> crate::Result<Self> {
         dynasty.get_json(crate::Path::Tag(tag_type), slug).await
     }
 }
 
-impl<M> Tag<M> {
+impl<M> TagInternal<M> {
     pub fn tags(&self) -> impl Iterator<Item = &Meta> {
         self.tags.iter()
     }
@@ -40,7 +40,7 @@ impl<M> Tag<M> {
     }
 }
 
-impl<Meta> Deref for Tag<Meta> {
+impl<Meta> Deref for TagInternal<Meta> {
     type Target = Meta;
 
     fn deref(&self) -> &Self::Target {

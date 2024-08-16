@@ -1,6 +1,6 @@
 use crate::Dynasty;
 
-use super::{Tag, Type};
+use super::{TagInternal, Type};
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct TagMeta<Type = super::Type> {
@@ -42,7 +42,7 @@ impl TagMeta {
         )
     }
 
-    pub async fn get(&self, dynasty: &Dynasty) -> crate::Result<Tag> {
-        Tag::get(dynasty, self.type_, self.slug()).await
+    pub async fn get(&self, dynasty: &Dynasty) -> crate::Result<TagInternal> {
+        TagInternal::get(dynasty, self.type_, self.slug()).await
     }
 }

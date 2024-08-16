@@ -10,7 +10,7 @@ pub use id::ChapterId as Id;
 
 use crate::Dynasty;
 
-use super::{Series, Tag, TagMeta};
+use super::{Series, TagInternal, TagMeta};
 
 pub use json::ChapterMeta as Meta;
 
@@ -68,7 +68,10 @@ impl Chapter {
         }
     }
 
-    pub fn tags<'a>(&'a self, dynasty: &'a Dynasty) -> impl Stream<Item = crate::Result<Tag>> + 'a {
+    pub fn tags<'a>(
+        &'a self,
+        dynasty: &'a Dynasty,
+    ) -> impl Stream<Item = crate::Result<TagInternal>> + 'a {
         futures::stream::iter(self.json.tags()).then(|tag| tag.get(dynasty))
     }
 }

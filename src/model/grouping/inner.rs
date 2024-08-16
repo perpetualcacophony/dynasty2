@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use crate::model::{Tag, TagMeta};
+use crate::model::{TagInternal, TagMeta};
 use crate::Dynasty;
 
 use super::{Kind, Meta};
@@ -8,7 +8,7 @@ use super::{Kind, Meta};
 #[derive(serde::Deserialize, Debug, Clone, PartialEq, Eq, Hash)]
 pub struct GroupingInner {
     #[serde(flatten)]
-    pub tag: Tag<Meta>,
+    pub tag: TagInternal<Meta>,
 
     pub cover: String,
 
@@ -30,7 +30,7 @@ impl GroupingInner {
 }
 
 impl Deref for GroupingInner {
-    type Target = Tag<Meta>;
+    type Target = TagInternal<Meta>;
 
     fn deref(&self) -> &Self::Target {
         &self.tag
