@@ -20,7 +20,7 @@ pub struct Date {
 }
 
 impl Date {
-    pub fn new(year: u16, month: u8, day: u8) -> Self {
+    fn new(year: u16, month: u8, day: u8) -> Self {
         assert!(month <= 12);
         assert!(day <= 31);
 
