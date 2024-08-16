@@ -2,6 +2,7 @@ use std::str::FromStr;
 
 use super::{ParseError, Slug};
 
+/// The owned variant of the [`Slug`] type, which can be deserialized.
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct SlugOwned {
     inner: String,
@@ -12,7 +13,7 @@ impl SlugOwned {
         Slug { inner: &self.inner }
     }
 
-    pub fn from_ref(slug: Slug) -> Self {
+    pub(super) fn from_ref(slug: Slug) -> Self {
         Self {
             inner: slug.inner.to_owned(),
         }

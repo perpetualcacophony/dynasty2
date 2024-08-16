@@ -6,6 +6,7 @@ pub use errors::ParseSlugError as ParseError;
 mod owned;
 pub use owned::SlugOwned;
 
+/// Uniquely identifies a response from a given category.
 #[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
 pub struct Slug<'a> {
     inner: &'a str,
@@ -20,7 +21,7 @@ impl<'a> Slug<'a> {
         Self::try_from(s)
     }
 
-    pub fn to_owned(self) -> SlugOwned {
+    fn to_owned(self) -> SlugOwned {
         SlugOwned::from_ref(self)
     }
 }

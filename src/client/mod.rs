@@ -66,7 +66,6 @@ pub type Result<T, E = Error> = std::result::Result<T, E>;
 #[derive(Debug)]
 pub enum Error {
     Http(http::Error),
-    ParseTag,
     ParseSlug(crate::slug::ParseError),
 }
 
@@ -79,8 +78,7 @@ impl From<http::Error> for Error {
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Http(http) => http.fmt(f),
-            Self::ParseTag => f.write_str("bwaa"),
+            Self::Http(err) => err.fmt(f),
             Self::ParseSlug(err) => err.fmt(f),
         }
     }

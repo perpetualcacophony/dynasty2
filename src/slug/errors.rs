@@ -40,9 +40,22 @@ impl ParseSlugError<()> {
 
 impl std::fmt::Display for ParseSlugError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str("slug must not contain slashes")
+        write!(
+            f,
+            "error parsing slug: {}",
+            match self.meta {
+                Meta::EmptyInput => "slugs cannot be empty".to_owned(),
+                Meta::HangingUnderscore => "slugs cannot start or end with underscores".to_owned(),
+                Meta::OnlyUnderscores =>
+                    "slugs must have characters other than underscores".to_owned(),
+                Meta::IllegalCharacter(IllegalCharacter { character }) =>
+                    format!("slugs cannot contain {character}"),
+            }
+        )
     }
 }
+
+impl std::error::Error for ParseSlugError {}
 
 #[derive(Debug)]
 pub enum Meta {
