@@ -1,4 +1,4 @@
-use crate::{model::TagMeta, Dynasty, Series};
+use crate::{model::TagMeta, Date, Dynasty, Series};
 
 use super::Chapter;
 
@@ -12,7 +12,7 @@ pub struct ChapterMeta {
 
     permalink: String,
 
-    released_on: String,
+    released_on: Date,
 
     dynasty_index: Option<usize>,
 
@@ -39,6 +39,10 @@ impl ChapterMeta {
 
     pub fn dynasty_index(&self) -> Option<usize> {
         self.dynasty_index
+    }
+
+    pub fn released_on(&self) -> &Date {
+        &self.released_on
     }
 
     pub fn set_dynasty_index(&mut self, index: Option<usize>) {
