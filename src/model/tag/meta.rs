@@ -43,6 +43,6 @@ impl TagMeta {
     }
 
     pub async fn get(&self, dynasty: &Dynasty) -> crate::Result<Tag> {
-        dynasty.tag(self.type_, self.slug()).await
+        Tag::get(dynasty, self.type_, self.slug()).await
     }
 }

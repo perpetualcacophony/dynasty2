@@ -1,7 +1,7 @@
 use crate::{
     http,
-    model::{Series, Tag, TagType},
-    Chapter, Http, Path,
+    model::{Doujins, Scanlator, Series},
+    Author, Chapter, Http, Pairing, Path, Tag,
 };
 
 #[derive(Default, Clone, Debug)]
@@ -30,8 +30,24 @@ impl Dynasty {
         Chapter::get(self, slug).await
     }
 
-    pub async fn tag(&self, tag_type: TagType, slug: &str) -> Result<Tag> {
-        Ok(self.http().json(&tag_type.permalink(slug)).await?)
+    pub async fn tag(&self, slug: &str) -> Result<Tag> {
+        Tag::get(self, slug).await
+    }
+
+    pub async fn pairing(&self, slug: &str) -> Result<Pairing> {
+        Pairing::get(self, slug).await
+    }
+
+    pub async fn author(&self, slug: &str) -> Result<Author> {
+        Author::get(self, slug).await
+    }
+
+    pub async fn scanlator(&self, slug: &str) -> Result<Scanlator> {
+        Scanlator::get(self, slug).await
+    }
+
+    pub async fn doujins(&self, slug: &str) -> Result<Doujins> {
+        Doujins::get(self, slug).await
     }
 
     pub async fn series(&self, slug: &str) -> Result<Series> {

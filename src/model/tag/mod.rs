@@ -26,7 +26,7 @@ pub struct Tag<Meta = meta::TagMeta> {
 
 impl Tag {
     pub async fn get(dynasty: &Dynasty, tag_type: Type, slug: &str) -> crate::Result<Self> {
-        dynasty.tag(tag_type, slug).await
+        dynasty.get_json(crate::Path::Tag(tag_type), slug).await
     }
 }
 
