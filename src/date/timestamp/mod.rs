@@ -5,6 +5,10 @@ use super::{Date, ParseError as ParseDateError};
 mod error;
 pub use error::ParseTimestampError as ParseError;
 
+/// Represents a specific time on a given date with second precision.
+///
+/// Dynasty timestamps have a constant UTC offset of `-04:00`, which is omitted
+/// from this struct for consistency.
 #[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
 pub struct Timestamp {
     date: Date,

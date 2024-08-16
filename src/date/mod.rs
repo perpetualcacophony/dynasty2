@@ -6,6 +6,12 @@ pub use timestamp::Timestamp;
 mod error;
 pub use error::ParseDateError as ParseError;
 
+/// Represents a specific date.
+///
+/// [`Chapter`](crate::Chapter) responses have both a `Date` and a [`Timestamp`].
+/// The `Date` represents when the chapter was released by the author,
+/// while the `Timestamp` represents the precise time it was uploaded
+/// to Dynasty's servers.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord)]
 pub struct Date {
     year: u16,
