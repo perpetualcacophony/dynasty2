@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::{fmt::Display, str::FromStr};
 
 use crate::{
     http,
@@ -20,6 +20,10 @@ impl Dynasty {
         &self.http
     }
 
+    pub fn parse_slug(s: &str) -> Result<Slug> {
+        Ok(Slug::from_str(s)?)
+    }
+
     pub async fn get_json<Json: serde::de::DeserializeOwned>(
         &self,
         path: Path,
@@ -28,32 +32,32 @@ impl Dynasty {
         Ok(self.http().json(LinkPath::new(path, slug)).await?)
     }
 
-    pub async fn chapter(&self, slug: &Slug) -> Result<Chapter> {
-        Chapter::get(self, slug).await
+    pub async fn chapter(&self, slug: &str) -> Result<Chapter> {
+        Chapter::get(self, &Self::parse_slug(slug)?).await
     }
 
-    pub async fn tag(&self, slug: &Slug) -> Result<Tag> {
-        Tag::get(self, slug).await
+    pub async fn tag(&self, slug: &str) -> Result<Tag> {
+        Tag::get(self, &Self::parse_slug(slug)?).await
     }
 
-    pub async fn pairing(&self, slug: &Slug) -> Result<Pairing> {
-        Pairing::get(self, slug).await
+    pub async fn pairing(&self, slug: &str) -> Result<Pairing> {
+        Pairing::get(self, &Self::parse_slug(slug)?).await
     }
 
-    pub async fn author(&self, slug: &Slug) -> Result<Author> {
-        Author::get(self, slug).await
+    pub async fn author(&self, slug: &str) -> Result<Author> {
+        Author::get(self, &Self::parse_slug(slug)?).await
     }
 
-    pub async fn scanlator(&self, slug: &Slug) -> Result<Scanlator> {
-        Scanlator::get(self, slug).await
+    pub async fn scanlator(&self, slug: &str) -> Result<Scanlator> {
+        Scanlator::get(self, &Self::parse_slug(slug)?).await
     }
 
-    pub async fn doujins(&self, slug: &Slug) -> Result<Doujins> {
-        Doujins::get(self, slug).await
+    pub async fn doujins(&self, slug: &str) -> Result<Doujins> {
+        Doujins::get(self, &Self::parse_slug(slug)?).await
     }
 
-    pub async fn series(&self, slug: &Slug) -> Result<Series> {
-        Series::get(self, slug).await
+    pub async fn series(&self, slug: &str) -> Result<Series> {
+        Series::get(self, &Self::parse_slug(slug)?).await
     }
 }
 
@@ -63,6 +67,7 @@ pub type Result<T, E = Error> = std::result::Result<T, E>;
 pub enum Error {
     Http(http::Error),
     ParseTag,
+    ParseSlug(crate::slug::ParseError),
 }
 
 impl From<http::Error> for Error {
@@ -76,8 +81,15 @@ impl Display for Error {
         match self {
             Self::Http(http) => http.fmt(f),
             Self::ParseTag => f.write_str("bwaa"),
+            Self::ParseSlug(err) => err.fmt(f),
         }
     }
 }
 
 impl std::error::Error for Error {}
+
+impl From<crate::slug::ParseError> for Error {
+    fn from(value: crate::slug::ParseError) -> Self {
+        Self::ParseSlug(value)
+    }
+}
