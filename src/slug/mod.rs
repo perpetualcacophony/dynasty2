@@ -37,9 +37,13 @@ impl<'a> TryFrom<&'a str> for Slug<'a> {
             return Err(ParseError::new(value).hanging_underscore());
         }
 
+        if value.chars().all(|ch| ch == '_') {
+            return Err(ParseError::new(value).only_underscores());
+        }
+
         #[allow(clippy::match_like_matches_macro)]
         let character_illegal = |ch: &char| match ch {
-            'A'..='Z' | ' '..='/' | ':'..='@' | '['..='`' | '{'..='}' => true,
+            'A'..='Z' | ' '..='/' | ':'..='@' | '['..='^' | '`' | '{'..='}' => true,
             _ => false,
         };
 
@@ -60,5 +64,43 @@ impl Display for Slug<'_> {
 impl<'a> PartialEq<&'a str> for Slug<'a> {
     fn eq(&self, other: &&'a str) -> bool {
         self.as_str().eq(*other)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::Slug;
+
+    mod parse {
+        use super::Slug;
+
+        #[test]
+        fn valid() {
+            Slug::parse("arai_sumiko").unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn all_underscores() {
+            Slug::parse("_______").unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn empty_input() {
+            Slug::parse(" ").unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn illegal_hyphen() {
+            Slug::parse("arai-sumiko").unwrap();
+        }
+
+        #[test]
+        #[should_panic]
+        fn illegal_caps() {
+            Slug::parse("arai_Sumiko").unwrap();
+        }
     }
 }

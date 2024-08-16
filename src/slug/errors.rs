@@ -32,6 +32,10 @@ impl ParseSlugError<()> {
     pub fn hanging_underscore(self) -> ParseSlugError {
         self.meta(Meta::HangingUnderscore)
     }
+
+    pub fn only_underscores(self) -> ParseSlugError {
+        self.meta(Meta::OnlyUnderscores)
+    }
 }
 
 impl std::fmt::Display for ParseSlugError {
@@ -45,6 +49,7 @@ pub enum Meta {
     EmptyInput,
     IllegalCharacter(IllegalCharacter),
     HangingUnderscore,
+    OnlyUnderscores,
 }
 
 #[derive(Debug)]
