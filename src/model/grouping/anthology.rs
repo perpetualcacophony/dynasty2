@@ -13,12 +13,16 @@ pub struct Anthology {
 
 impl Anthology {
     pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        dynasty.get_json(crate::Path::Anthologies, slug).await
+        <Self as crate::Response>::get(dynasty, slug).await
     }
 
     pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
         self.taggings.iter()
     }
+}
+
+impl crate::Response for Anthology {
+    const PATH: crate::Path = crate::Path::new("anthologies");
 }
 
 impl Deref for Anthology {

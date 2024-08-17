@@ -16,8 +16,12 @@ pub struct Doujins {
 
 impl Doujins {
     pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        dynasty.get_json(crate::Path::Doujins, slug).await
+        <Self as crate::Response>::get(dynasty, slug).await
     }
+}
+
+impl crate::Response for Doujins {
+    const PATH: crate::Path = crate::Path::new("doujins");
 }
 
 impl Deref for Doujins {

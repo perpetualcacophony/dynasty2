@@ -14,12 +14,16 @@ pub struct Issue {
 
 impl Issue {
     pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        dynasty.get_json(crate::Path::Issues, slug).await
+        <Self as crate::Response>::get(dynasty, slug).await
     }
 
     pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
         self.taggings.iter()
     }
+}
+
+impl crate::Response for Issue {
+    const PATH: crate::Path = crate::Path::new("issues");
 }
 
 impl Deref for Issue {

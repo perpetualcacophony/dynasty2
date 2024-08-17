@@ -1,29 +1,16 @@
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub enum Path {
-    Chapters,
-    Series,
-    Authors,
-    Anthologies,
-    Scanlators,
-    Issues,
-    Doujins,
-    Pairings,
-    Tags,
+pub struct Path {
+    inner: &'static str,
 }
 
 impl Path {
-    pub fn as_str(&self) -> &'static str {
-        match self {
-            Self::Chapters => "chapters",
-            Self::Series => "series",
-            Self::Authors => "authors",
-            Self::Anthologies => "anthologies",
-            Self::Scanlators => "scanlators",
-            Self::Issues => "issues",
-            Self::Doujins => "doujins",
-            Self::Pairings => "pairings",
-            Self::Tags => "tags",
-        }
+    pub const fn as_str(&self) -> &str {
+        self.inner
+    }
+
+    pub const fn new(s: &'static str) -> Self {
+        assert!(s.is_ascii());
+        Self { inner: s }
     }
 }
 

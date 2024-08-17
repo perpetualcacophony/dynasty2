@@ -12,8 +12,12 @@ pub struct Tag {
 
 impl Tag {
     pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        dynasty.get_json(crate::Path::Tags, slug).await
+        <Self as crate::Response>::get(dynasty, slug).await
     }
+}
+
+impl crate::Response for Tag {
+    const PATH: crate::Path = crate::Path::new("tags");
 }
 
 impl Deref for Tag {

@@ -26,10 +26,14 @@ impl Deref for Scanlator {
 
 impl Scanlator {
     pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        dynasty.get_json(crate::Path::Scanlators, slug).await
+        <Self as crate::Response>::get(dynasty, slug).await
     }
 
     pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
         self.taggings.iter()
     }
+}
+
+impl crate::Response for Scanlator {
+    const PATH: crate::Path = crate::Path::new("scanlators");
 }

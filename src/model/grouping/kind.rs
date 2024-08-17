@@ -1,4 +1,4 @@
-use crate::{model::TagType, Path};
+use crate::model::TagType;
 
 #[derive(Clone, Debug, PartialEq, Eq, Copy, Hash)]
 pub enum GroupingKind {
@@ -9,13 +9,6 @@ pub enum GroupingKind {
 impl GroupingKind {
     pub fn parse(s: &str) -> Result<Self, &str> {
         TagType::parse(s)?.try_into().map_err(|_| s)
-    }
-
-    pub fn path(&self) -> Path {
-        match self {
-            Self::Anthology => Path::Anthologies,
-            Self::Series => Path::Series,
-        }
     }
 }
 

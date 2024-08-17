@@ -13,7 +13,7 @@ pub struct Pairing {
 
 impl Pairing {
     pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        dynasty.get_json(crate::Path::Pairings, slug).await
+        <Self as crate::Response>::get(dynasty, slug).await
     }
 
     pub fn partners(&self) -> impl Iterator<Item = &str> {
@@ -29,6 +29,10 @@ impl Pairing {
 
         Some([partners.next()?, partners.next()?])
     }
+}
+
+impl crate::Response for Pairing {
+    const PATH: crate::Path = crate::Path::new("pairings");
 }
 
 impl Deref for Pairing {

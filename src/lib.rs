@@ -14,7 +14,10 @@ pub mod date;
 pub use date::{Date, Timestamp};
 
 pub mod slug;
-pub use slug::{SlugOwned, Slug};
+pub use slug::{Slug, SlugOwned};
 
 pub mod link;
 pub use link::{ImageLink, Link, LinkPath};
+
+mod response;
+use response::Response;

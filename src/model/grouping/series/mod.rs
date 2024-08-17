@@ -25,7 +25,7 @@ impl Series {
     /// This method is semantically equivalent to
     /// `https://dynasty-scans.com/series/{slug}`
     pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        dynasty.get_json(crate::Path::Series, slug).await
+        <Self as crate::Response>::get(dynasty, slug).await
     }
 
     /// Returns volume headers and chapter metadata in the layout
@@ -78,6 +78,10 @@ impl Series {
     pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
         self.taggings().filter_map(Tagging::chapter)
     }
+}
+
+impl crate::Response for Series {
+    const PATH: crate::Path = crate::Path::new("series");
 }
 
 impl Deref for Series {

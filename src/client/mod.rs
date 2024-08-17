@@ -3,7 +3,7 @@ use std::fmt::Display;
 use crate::{
     http,
     model::{Doujins, Scanlator, Series},
-    Author, Chapter, Http, LinkPath, Pairing, Path, Slug, Tag,
+    Author, Chapter, Http, Pairing, Slug, Tag,
 };
 
 #[derive(Default, Clone, Debug)]
@@ -22,14 +22,6 @@ impl Dynasty {
 
     pub fn parse_slug(s: &str) -> Result<Slug> {
         Ok(Slug::parse(s)?)
-    }
-
-    pub async fn get_json<Json: serde::de::DeserializeOwned>(
-        &self,
-        path: Path,
-        slug: Slug<'_>,
-    ) -> Result<Json> {
-        Ok(self.http().json(LinkPath::new(path, slug)).await?)
     }
 
     pub async fn chapter(&self, slug: &str) -> Result<Chapter> {

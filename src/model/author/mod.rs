@@ -17,7 +17,7 @@ pub struct Author {
 
 impl Author {
     pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        dynasty.get_json(crate::Path::Authors, slug).await
+        <Self as crate::Response>::get(dynasty, slug).await
     }
 
     pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
@@ -27,6 +27,10 @@ impl Author {
     pub fn series(&self) -> impl Iterator<Item = &GroupingMeta> {
         self.taggables.iter()
     }
+}
+
+impl crate::Response for Author {
+    const PATH: crate::Path = crate::Path::new("authors");
 }
 
 impl Deref for Author {
