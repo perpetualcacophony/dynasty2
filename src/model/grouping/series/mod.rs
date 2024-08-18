@@ -2,7 +2,7 @@ use std::ops::Deref;
 
 use super::Inner;
 
-use crate::{model::ChapterMeta, Dynasty, Slug};
+use crate::model::ChapterMeta;
 
 mod tagging;
 pub use tagging::SeriesTagging as Tagging;
@@ -20,14 +20,6 @@ pub struct Series {
 }
 
 impl Series {
-    /// Requests a `Series` with the given slug.
-    ///
-    /// This method is semantically equivalent to
-    /// `https://dynasty-scans.com/series/{slug}`
-    pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        <Self as crate::Response>::get(dynasty, slug).await
-    }
-
     /// Returns volume headers and chapter metadata in the layout
     /// directly received from Dynasty.
     ///
@@ -75,7 +67,7 @@ impl Series {
     }
 
     #[tracing::instrument(skip_all)]
-    pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
+    pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> + '_ {
         self.taggings().filter_map(Tagging::chapter)
     }
 }

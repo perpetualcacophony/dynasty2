@@ -17,7 +17,7 @@ pub mod slug;
 pub use slug::{Slug, SlugOwned};
 
 pub mod link;
-pub use link::{ImageLink, Link, LinkPath};
+pub use link::ImageLink;
 
 mod response;
 use response::Response;

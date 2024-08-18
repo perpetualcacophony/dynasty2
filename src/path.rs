@@ -1,3 +1,5 @@
+use std::ops::Deref;
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Path {
     inner: &'static str,
@@ -11,6 +13,14 @@ impl Path {
     pub const fn new(s: &'static str) -> Self {
         assert!(s.is_ascii());
         Self { inner: s }
+    }
+}
+
+impl Deref for Path {
+    type Target = str;
+
+    fn deref(&self) -> &Self::Target {
+        self.as_str()
     }
 }
 

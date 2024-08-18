@@ -1,5 +1,5 @@
 use super::Inner;
-use crate::{model::ChapterMeta, Dynasty, Slug};
+use crate::model::ChapterMeta;
 use std::ops::Deref;
 
 /// A collection of chapters by various authors.
@@ -12,10 +12,6 @@ pub struct Anthology {
 }
 
 impl Anthology {
-    pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        <Self as crate::Response>::get(dynasty, slug).await
-    }
-
     pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
         self.taggings.iter()
     }

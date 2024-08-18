@@ -1,4 +1,4 @@
-use crate::LinkPath;
+use crate::response::Request;
 use std::fmt::Display;
 
 #[derive(Default, Clone, Debug)]
@@ -6,6 +6,8 @@ pub struct Http {
     #[cfg(feature = "reqwest")]
     reqwest: reqwest::Client,
 }
+
+use crate::response::UrlBuilder;
 
 impl Http {
     pub const HOST_URL: &str = "https://dynasty-scans.com";
@@ -18,15 +20,24 @@ impl Http {
         url::Url::parse(Self::HOST_URL).expect("host url should be valid")
     }
 
+    pub fn request_url<T>(request: impl Request<Resp = T>) -> url::Url {
+        let mut url = UrlBuilder::default();
+        request.url(&mut url);
+        let mut url = url.url();
+        url.set_path(&format!("{}.json", url.path()));
+        url
+    }
+
     #[cfg(feature = "reqwest")]
-    #[tracing::instrument(skip(self))]
+    #[tracing::instrument(skip(self, request))]
     pub async fn json<Json: serde::de::DeserializeOwned>(
         &self,
-        link: LinkPath<'_>,
+        request: impl Request<Resp = Json>,
     ) -> Result<Json> {
-        let mut url = link.url();
-        url.set_path(&format!("{}.json", url.path()));
+        let url = Self::request_url(request);
         tracing::debug!(%url);
+
+        let path = url.path().to_owned();
 
         let json: Result<Json> = backoff::future::retry_notify(
             backoff::ExponentialBackoff::default(),
@@ -40,7 +51,7 @@ impl Http {
                     .json::<Json>()
                     .await
                     .map_err(|err| JsonError {
-                        path: link.to_string(),
+                        path: path.clone(),
                         client: err.into(),
                     })
                     .map_err(Error::from)?)

@@ -1,21 +1,15 @@
 use std::ops::Deref;
 
-use crate::{Dynasty, Slug};
-
-use super::Inner;
+use super::{view, Inner};
 
 /// A tag representing a romantic relationship.
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct Pairing {
+pub struct Pairing<View = view::Chapters> {
     #[serde(flatten)]
-    inner: Inner,
+    inner: Inner<View>,
 }
 
 impl Pairing {
-    pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        <Self as crate::Response>::get(dynasty, slug).await
-    }
-
     pub fn partners(&self) -> impl Iterator<Item = &str> {
         self.name().split(" x ")
     }
@@ -31,12 +25,12 @@ impl Pairing {
     }
 }
 
-impl crate::Response for Pairing {
+impl<T> crate::Response for Pairing<T> {
     const PATH: crate::Path = crate::Path::new("pairings");
 }
 
-impl Deref for Pairing {
-    type Target = Inner;
+impl<View> Deref for Pairing<View> {
+    type Target = Inner<View>;
 
     fn deref(&self) -> &Self::Target {
         &self.inner

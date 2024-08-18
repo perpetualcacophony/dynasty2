@@ -1,9 +1,6 @@
 use std::ops::Deref;
 
-use crate::{
-    model::{GroupingMeta, TagMeta},
-    Dynasty, Slug,
-};
+use crate::model::{GroupingMeta, TagMeta};
 
 use super::Inner;
 
@@ -12,12 +9,6 @@ use super::Inner;
 pub struct Doujins {
     #[serde(flatten)]
     inner: Inner<DoujinTaggable>,
-}
-
-impl Doujins {
-    pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        <Self as crate::Response>::get(dynasty, slug).await
-    }
 }
 
 impl crate::Response for Doujins {

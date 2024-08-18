@@ -12,7 +12,7 @@ pub use meta::ChapterMeta as Meta;
 mod page;
 pub use page::Page;
 
-use crate::{Dynasty, Slug, Timestamp};
+use crate::Timestamp;
 
 use super::TagMeta;
 
@@ -43,22 +43,6 @@ impl Deref for Chapter {
 }
 
 impl Chapter {
-    /// Requests a `Chapter` with the given slug.
-    ///
-    /// This method is semantically equivalent to
-    /// `https://dynasty-scans.com/chapter/{slug}`
-    pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        <Self as crate::Response>::get(dynasty, slug).await
-    }
-
-    pub async fn from_meta(dynasty: &Dynasty, meta: &Meta) -> crate::Result<Self> {
-        let mut new = Self::get(dynasty, meta.slug()).await?;
-
-        new.meta.set_dynasty_index(meta.dynasty_index());
-
-        Ok(new)
-    }
-
     pub fn pages(&self) -> impl Iterator<Item = &Page> {
         self.pages.iter()
     }

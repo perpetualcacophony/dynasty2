@@ -1,6 +1,4 @@
-use crate::{model::TagMeta, Date, Dynasty, Series, Slug, SlugOwned};
-
-use super::Chapter;
+use crate::{model::TagMeta, Date, Slug, SlugOwned};
 
 /// Minimal detail about a chapter, included in other responses.
 ///
@@ -20,11 +18,6 @@ pub struct ChapterMeta {
 }
 
 impl ChapterMeta {
-    /// Requests a complete [`Chapter`] using this metadata.
-    pub async fn chapter(&self, dynasty: &Dynasty) -> crate::Result<Chapter> {
-        Chapter::from_meta(dynasty, self).await
-    }
-
     pub fn title(&self) -> &str {
         &self.title
     }
@@ -51,13 +44,5 @@ impl ChapterMeta {
 
     pub fn series_tag(&self) -> Option<&TagMeta> {
         self.tags().find(|tag| tag.is_series())
-    }
-
-    pub async fn series(&self, dynasty: &Dynasty) -> Option<crate::Result<Series>> {
-        if let Some(tag) = self.series_tag() {
-            Some(Series::get(dynasty, tag.slug()).await)
-        } else {
-            None
-        }
     }
 }

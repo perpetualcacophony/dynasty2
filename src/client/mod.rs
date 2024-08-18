@@ -1,8 +1,11 @@
 use std::fmt::Display;
 
+use serde::de::DeserializeOwned;
+
 use crate::{
     http,
     model::{Doujins, Scanlator, Series},
+    response::{request::RequestCore, Request, Response},
     Author, Chapter, Http, Pairing, Slug, Tag,
 };
 
@@ -24,32 +27,16 @@ impl Dynasty {
         Ok(Slug::parse(s)?)
     }
 
-    pub async fn chapter(&self, slug: &str) -> Result<Chapter> {
-        Chapter::get(self, Self::parse_slug(slug)?).await
+    fn request<'a, T: Response + DeserializeOwned + 'a>(&'a self) -> RequestCore<'a, T> {
+        RequestCore::new(self, T::PATH)
     }
 
-    pub async fn tag(&self, slug: &str) -> Result<Tag> {
-        Tag::get(self, Self::parse_slug(slug)?).await
+    pub fn chapter<'a>(&'a self, slug: &'a str) -> impl Request<Resp = Chapter> + 'a {
+        self.request().slug(Self::parse_slug(slug).unwrap())
     }
 
-    pub async fn pairing(&self, slug: &str) -> Result<Pairing> {
-        Pairing::get(self, Self::parse_slug(slug)?).await
-    }
-
-    pub async fn author(&self, slug: &str) -> Result<Author> {
-        Author::get(self, Self::parse_slug(slug)?).await
-    }
-
-    pub async fn scanlator(&self, slug: &str) -> Result<Scanlator> {
-        Scanlator::get(self, Self::parse_slug(slug)?).await
-    }
-
-    pub async fn doujins(&self, slug: &str) -> Result<Doujins> {
-        Doujins::get(self, Self::parse_slug(slug)?).await
-    }
-
-    pub async fn series(&self, slug: &str) -> Result<Series> {
-        Series::get(self, Self::parse_slug(slug)?).await
+    pub fn series<'a>(&'a self, slug: &'a str) -> impl Request<Resp = Series> + 'a {
+        self.request().slug(Self::parse_slug(slug).unwrap())
     }
 }
 

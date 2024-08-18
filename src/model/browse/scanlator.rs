@@ -1,36 +1,19 @@
 use std::ops::Deref;
 
-use crate::{model::ChapterMeta, Dynasty, Slug};
-
-use super::{Pages, Tag};
+use super::{view, Inner};
 
 /// Represents a single scanlator or scanlation group and their translated chapters.
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct Scanlator {
+pub struct Scanlator<View = view::Chapters> {
     #[serde(flatten)]
-    tag: Tag,
-
-    #[serde(flatten)]
-    pages: Pages,
-
-    taggings: Vec<ChapterMeta>,
+    inner: Inner<View>,
 }
 
-impl Deref for Scanlator {
-    type Target = Tag;
+impl<View> Deref for Scanlator<View> {
+    type Target = Inner<View>;
 
     fn deref(&self) -> &Self::Target {
-        &self.tag
-    }
-}
-
-impl Scanlator {
-    pub async fn get(dynasty: &Dynasty, slug: Slug<'_>) -> crate::Result<Self> {
-        <Self as crate::Response>::get(dynasty, slug).await
-    }
-
-    pub fn chapters(&self) -> impl Iterator<Item = &ChapterMeta> {
-        self.taggings.iter()
+        &self.inner
     }
 }
 
