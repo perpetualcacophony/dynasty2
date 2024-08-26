@@ -1,3 +1,7 @@
+use std::future::IntoFuture;
+
+use futures::future::BoxFuture;
+
 use crate::{Dynasty, Slug};
 
 use super::Chapter;
@@ -14,5 +18,14 @@ impl<'a> RequestChapter<'a> {
 
     pub async fn send(self) -> crate::Result<Chapter> {
         todo!()
+    }
+}
+
+impl<'a> IntoFuture for RequestChapter<'a> {
+    type Output = crate::Result<Chapter>;
+    type IntoFuture = BoxFuture<'a, Self::Output>;
+
+    fn into_future(self) -> Self::IntoFuture {
+        Box::pin(self.send())
     }
 }

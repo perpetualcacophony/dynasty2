@@ -1,3 +1,7 @@
+use std::future::IntoFuture;
+
+use futures::future::BoxFuture;
+
 use crate::{Dynasty, Slug};
 
 use super::Author;
@@ -14,5 +18,14 @@ impl<'a> RequestAuthor<'a> {
 
     pub async fn send(self) -> crate::Result<Author> {
         todo!()
+    }
+}
+
+impl<'a> IntoFuture for RequestAuthor<'a> {
+    type Output = crate::Result<Author>;
+    type IntoFuture = BoxFuture<'a, Self::Output>;
+
+    fn into_future(self) -> Self::IntoFuture {
+        Box::pin(self.send())
     }
 }

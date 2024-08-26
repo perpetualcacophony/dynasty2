@@ -1,3 +1,7 @@
+use std::future::IntoFuture;
+
+use futures::future::BoxFuture;
+
 use crate::{Dynasty, Slug};
 
 use super::Series;
@@ -14,5 +18,14 @@ impl<'a> RequestSeries<'a> {
 
     pub async fn send(self) -> crate::Result<Series> {
         todo!()
+    }
+}
+
+impl<'a> IntoFuture for RequestSeries<'a> {
+    type Output = crate::Result<Series>;
+    type IntoFuture = BoxFuture<'a, Self::Output>;
+
+    fn into_future(self) -> Self::IntoFuture {
+        Box::pin(self.send())
     }
 }
