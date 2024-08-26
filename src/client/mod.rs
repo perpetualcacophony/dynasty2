@@ -4,10 +4,15 @@ use serde::de::DeserializeOwned;
 
 use crate::{
     http,
-    model::{Doujins, Scanlator, Series},
+    model::{
+        author::RequestAuthor, grouping::RequestSeries, Doujins, RequestChapter, Scanlator, Series,
+    },
     response::{request::RequestCore, Request, Response},
-    Author, Chapter, Http, Pairing, Slug, Tag,
+    Author, Chapter, Http, Slug, Tag, ToSlug,
 };
+
+#[cfg(feature = "pairings")]
+use crate::{model::browse::RequestPairing, Pairing};
 
 #[derive(Default, Clone, Debug)]
 pub struct Dynasty {
@@ -27,16 +32,25 @@ impl Dynasty {
         Ok(Slug::parse(s)?)
     }
 
-    fn request<'a, T: Response + DeserializeOwned + 'a>(&'a self) -> RequestCore<'a, T> {
-        RequestCore::new(self, T::PATH)
+    fn request<'a, T: Response + DeserializeOwned + 'a>(&'a self) -> Request<'a, T> {
+        Request::new(self, T::PATH)
     }
 
-    pub fn chapter<'a>(&'a self, slug: &'a str) -> impl Request<Resp = Chapter> + 'a {
-        self.request().slug(Self::parse_slug(slug).unwrap())
+    pub fn chapter<'a>(&'a self, slug: &'a impl ToSlug) -> Result<RequestChapter<'a>> {
+        Ok(RequestChapter::new(self, slug.to_slug()?))
     }
 
-    pub fn series<'a>(&'a self, slug: &'a str) -> impl Request<Resp = Series> + 'a {
-        self.request().slug(Self::parse_slug(slug).unwrap())
+    pub fn series<'a>(&'a self, slug: &'a impl ToSlug) -> Result<RequestSeries<'a>> {
+        Ok(RequestSeries::new(self, slug.to_slug()?))
+    }
+
+    pub fn author<'a>(&'a self, slug: &'a impl ToSlug) -> Result<RequestAuthor<'a>> {
+        Ok(RequestAuthor::new(self, slug.to_slug()?))
+    }
+
+    #[cfg(feature = "pairings")]
+    pub fn pairing<'a>(&'a self, slug: &'a impl ToSlug) -> Result<RequestPairing<'a>> {
+        Ok(RequestPairing::new(self, slug.to_slug()?))
     }
 }
 

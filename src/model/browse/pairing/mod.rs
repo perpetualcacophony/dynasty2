@@ -2,6 +2,9 @@ use std::ops::Deref;
 
 use super::{view, Inner};
 
+mod request;
+pub use request::RequestPairing;
+
 /// A tag representing a romantic relationship.
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Pairing<View = view::Chapters> {

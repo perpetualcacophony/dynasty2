@@ -19,3 +19,5 @@ reqwest = ["dep:reqwest"]
 tokio = ["backoff/tokio"]
 time = ["dep:time"]
 chrono = ["dep:chrono"]
+
+pairings = []

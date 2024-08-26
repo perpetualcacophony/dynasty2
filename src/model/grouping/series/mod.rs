@@ -7,6 +7,9 @@ use crate::model::ChapterMeta;
 mod tagging;
 pub use tagging::SeriesTagging as Tagging;
 
+mod request;
+pub use request::RequestSeries;
+
 mod volume;
 pub use volume::Volume;
 

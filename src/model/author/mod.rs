@@ -2,6 +2,9 @@ use std::ops::Deref;
 
 use super::{ChapterMeta, GroupingMeta, TagInternal};
 
+mod request;
+pub use request::RequestAuthor;
+
 /// Represents the creator of select chapters and narratives.
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Author {

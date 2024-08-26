@@ -16,8 +16,10 @@ pub use view::{
 mod tag;
 pub use tag::Tag;
 
+#[cfg(feature = "pairings")]
 mod pairing;
-pub use pairing::Pairing;
+#[cfg(feature = "pairings")]
+pub use pairing::{Pairing, RequestPairing};
 
 mod doujins;
 pub use doujins::Doujins;

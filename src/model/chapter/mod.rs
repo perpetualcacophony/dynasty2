@@ -12,6 +12,9 @@ pub use meta::ChapterMeta as Meta;
 mod page;
 pub use page::Page;
 
+mod request;
+pub use request::RequestChapter as Request;
+
 use crate::Timestamp;
 
 use super::TagMeta;

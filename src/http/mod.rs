@@ -20,7 +20,9 @@ impl Http {
         url::Url::parse(Self::HOST_URL).expect("host url should be valid")
     }
 
-    pub fn request_url<T>(request: impl Request<Resp = T>) -> url::Url {
+    pub fn request_url<T>(
+        request: Request<'_, T, impl crate::response::request::RequestCore<Resp = T>>,
+    ) -> url::Url {
         let mut url = UrlBuilder::default();
         request.url(&mut url);
         let mut url = url.url();
@@ -32,7 +34,7 @@ impl Http {
     #[tracing::instrument(skip(self, request))]
     pub async fn json<Json: serde::de::DeserializeOwned>(
         &self,
-        request: impl Request<Resp = Json>,
+        request: Request<'_, Json, impl crate::response::request::RequestCore<Resp = Json>>,
     ) -> Result<Json> {
         let url = Self::request_url(request);
         tracing::debug!(%url);

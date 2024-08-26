@@ -1,5 +1,8 @@
 use std::fmt::Display;
 
+mod to_slug;
+pub use to_slug::ToSlug;
+
 pub mod errors;
 pub use errors::ParseSlugError as ParseError;
 

@@ -1,7 +1,7 @@
 pub mod series;
 use std::ops::Deref;
 
-pub use series::{Series, Tagging as SeriesTagging};
+pub use series::{RequestSeries, Series, Tagging as SeriesTagging};
 
 mod anthology;
 pub use anthology::Anthology;
