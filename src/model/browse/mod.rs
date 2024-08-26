@@ -24,5 +24,7 @@ pub use pairing::{Pairing, RequestPairing};
 mod doujins;
 pub use doujins::Doujins;
 
+#[cfg(feature = "scanlators")]
 mod scanlator;
+#[cfg(feature = "scanlators")]
 pub use scanlator::Scanlator;

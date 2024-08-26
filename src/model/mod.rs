@@ -8,10 +8,13 @@ pub mod tag;
 pub use tag::{Meta as TagMeta, Parse as ParseTag, TagInternal, Type as TagType};
 
 pub mod browse;
-pub use browse::{Doujins, Scanlator, Tag};
+pub use browse::{Doujins, Tag};
 
 #[cfg(feature = "pairings")]
 pub use browse::Pairing;
+
+#[cfg(feature = "scanlators")]
+pub use browse::Scanlator;
 
 pub mod author;
 pub use author::Author;

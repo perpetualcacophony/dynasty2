@@ -4,15 +4,16 @@ use serde::de::DeserializeOwned;
 
 use crate::{
     http,
-    model::{
-        author::RequestAuthor, grouping::RequestSeries, Doujins, RequestChapter, Scanlator, Series,
-    },
+    model::{author::RequestAuthor, grouping::RequestSeries, Doujins, RequestChapter, Series},
     response::{request::RequestCore, Request, Response},
     Author, Chapter, Http, Slug, Tag, ToSlug,
 };
 
 #[cfg(feature = "pairings")]
 use crate::{model::browse::RequestPairing, Pairing};
+
+#[cfg(feature = "scanlators")]
+use crate::model::browse::Scanlator;
 
 #[derive(Default, Clone, Debug)]
 pub struct Dynasty {

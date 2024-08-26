@@ -21,3 +21,4 @@ time = ["dep:time"]
 chrono = ["dep:chrono"]
 
 pairings = []
+scanlators = []
