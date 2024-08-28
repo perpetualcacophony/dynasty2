@@ -1,31 +1,25 @@
-use std::future::IntoFuture;
+use crate::{response::request::Request, RequestParams, Slug};
 
-use futures::future::BoxFuture;
-
-use crate::{Dynasty, Slug};
-
-use super::Series;
-
-pub struct RequestSeries<'a> {
-    dynasty: &'a Dynasty,
+pub struct SeriesParams<'a> {
     slug: Slug<'a>,
 }
 
-impl<'a> RequestSeries<'a> {
-    pub(crate) fn new(dynasty: &'a Dynasty, slug: Slug<'a>) -> Self {
-        Self { dynasty, slug }
-    }
-
-    pub async fn send(self) -> crate::Result<Series> {
-        todo!()
+impl<'a> SeriesParams<'a> {
+    pub(crate) fn new(slug: Slug<'a>) -> Self {
+        Self { slug }
     }
 }
 
-impl<'a> IntoFuture for RequestSeries<'a> {
-    type Output = crate::Result<Series>;
-    type IntoFuture = BoxFuture<'a, Self::Output>;
-
-    fn into_future(self) -> Self::IntoFuture {
-        Box::pin(self.send())
+impl<'a> RequestParams<'a> for SeriesParams<'a> {
+    fn url<'url, 'builder>(
+        self,
+        builder: &'url mut crate::response::UrlBuilder<'builder>,
+    ) -> &'url mut crate::response::UrlBuilder<'builder>
+    where
+        Self: 'builder + Sized,
+    {
+        builder.slug(self.slug)
     }
 }
+
+pub type RequestSeries<'a> = Request<'a, super::Series>;

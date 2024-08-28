@@ -13,6 +13,7 @@ mod page;
 pub use page::Page;
 
 mod request;
+pub use request::ChapterParams;
 pub use request::RequestChapter as Request;
 
 use crate::Timestamp;
@@ -69,4 +70,5 @@ impl Chapter {
 
 impl crate::Response for Chapter {
     const PATH: crate::Path = crate::Path::new("chapters");
+    type Params<'a> = ChapterParams<'a>;
 }

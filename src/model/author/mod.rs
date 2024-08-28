@@ -3,7 +3,7 @@ use std::ops::Deref;
 use super::{ChapterMeta, GroupingMeta, TagInternal};
 
 mod request;
-pub use request::RequestAuthor;
+pub use request::{AuthorParams, RequestAuthor};
 
 /// Represents the creator of select chapters and narratives.
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
@@ -28,6 +28,7 @@ impl Author {
 
 impl crate::Response for Author {
     const PATH: crate::Path = crate::Path::new("authors");
+    type Params<'a> = AuthorParams<'a>;
 }
 
 impl Deref for Author {

@@ -1,10 +1,13 @@
 use crate::{Path, Slug};
 
 pub mod request;
-pub use request::Request;
+pub use request::RequestParams;
+use serde::de::DeserializeOwned;
 
-pub trait Response {
+pub trait Response: DeserializeOwned {
     const PATH: Path;
+
+    type Params<'a>: RequestParams<'a>;
 }
 
 #[derive(Clone, Copy, Debug)]

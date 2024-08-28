@@ -22,3 +22,4 @@ chrono = ["dep:chrono"]
 
 pairings = []
 scanlators = []
+view = []

@@ -26,5 +26,5 @@ pub mod link;
 pub use link::ImageLink;
 
 mod response;
-pub use response::Request;
+pub use response::RequestParams;
 use response::Response;

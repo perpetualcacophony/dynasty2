@@ -7,7 +7,9 @@ pub use pages::BrowsePages as Pages;
 mod items;
 pub use items::BrowseItems as Items;
 
+#[cfg(feature = "view")]
 mod view;
+#[cfg(feature = "view")]
 pub use view::{
     Chapters as ViewChapters, Groupings as ViewGroupings, OneShots as ViewOneShots,
     Pairings as ViewPairings,

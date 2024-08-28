@@ -5,6 +5,7 @@ use super::Inner;
 use crate::model::ChapterMeta;
 
 mod tagging;
+pub use request::SeriesParams;
 pub use tagging::SeriesTagging as Tagging;
 
 mod request;
@@ -77,6 +78,7 @@ impl Series {
 
 impl crate::Response for Series {
     const PATH: crate::Path = crate::Path::new("series");
+    type Params<'a> = SeriesParams<'a>;
 }
 
 impl Deref for Series {

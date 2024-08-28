@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use crate::model::ChapterMeta;
+use crate::{model::ChapterMeta, RequestParams, Slug};
 
 use super::Inner;
 
@@ -20,6 +20,7 @@ impl Issue {
 
 impl crate::Response for Issue {
     const PATH: crate::Path = crate::Path::new("issues");
+    type Params<'a> = IssueParams<'a>;
 }
 
 impl Deref for Issue {
@@ -27,5 +28,21 @@ impl Deref for Issue {
 
     fn deref(&self) -> &Self::Target {
         &self.grouping
+    }
+}
+
+pub struct IssueParams<'a> {
+    slug: Slug<'a>,
+}
+
+impl<'a> RequestParams<'a> for IssueParams<'a> {
+    fn url<'url, 'builder>(
+        self,
+        builder: &'url mut crate::response::UrlBuilder<'builder>,
+    ) -> &'url mut crate::response::UrlBuilder<'builder>
+    where
+        Self: 'builder + Sized,
+    {
+        builder.slug(self.slug)
     }
 }

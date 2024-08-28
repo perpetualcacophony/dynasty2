@@ -1,11 +1,14 @@
 use std::fmt::Display;
 
-use serde::de::DeserializeOwned;
-
 use crate::{
     http,
-    model::{author::RequestAuthor, grouping::RequestSeries, Doujins, RequestChapter, Series},
-    response::{request::RequestCore, Request, Response},
+    model::{
+        author::{AuthorParams, RequestAuthor},
+        chapter::ChapterParams,
+        grouping::{series::SeriesParams, RequestSeries},
+        Doujins, RequestChapter, Series,
+    },
+    response::{request::Request, RequestParams, Response},
     Author, Chapter, Http, Slug, Tag, ToSlug,
 };
 
@@ -33,25 +36,20 @@ impl Dynasty {
         Ok(Slug::parse(s)?)
     }
 
-    fn request<'a, T: Response + DeserializeOwned + 'a>(&'a self) -> Request<'a, T> {
-        Request::new(self, T::PATH)
+    pub fn request<'a, R: Response>(&'a self, params: R::Params<'a>) -> Request<'a, R> {
+        Request::new(self, params)
     }
 
     pub fn chapter<'a>(&'a self, slug: &'a impl ToSlug) -> Result<RequestChapter<'a>> {
-        Ok(RequestChapter::new(self, slug.to_slug()?))
+        Ok(self.request(ChapterParams::new(slug.to_slug()?)))
     }
 
     pub fn series<'a>(&'a self, slug: &'a impl ToSlug) -> Result<RequestSeries<'a>> {
-        Ok(RequestSeries::new(self, slug.to_slug()?))
+        Ok(self.request(SeriesParams::new(slug.to_slug()?)))
     }
 
     pub fn author<'a>(&'a self, slug: &'a impl ToSlug) -> Result<RequestAuthor<'a>> {
-        Ok(RequestAuthor::new(self, slug.to_slug()?))
-    }
-
-    #[cfg(feature = "pairings")]
-    pub fn pairing<'a>(&'a self, slug: &'a impl ToSlug) -> Result<RequestPairing<'a>> {
-        Ok(RequestPairing::new(self, slug.to_slug()?))
+        Ok(self.request(AuthorParams::new(slug.to_slug()?)))
     }
 }
 

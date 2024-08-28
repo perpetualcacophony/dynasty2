@@ -1,4 +1,3 @@
-use crate::response::Request;
 use std::fmt::Display;
 
 #[derive(Default, Clone, Debug)]
@@ -20,23 +19,14 @@ impl Http {
         url::Url::parse(Self::HOST_URL).expect("host url should be valid")
     }
 
-    pub fn request_url<T>(
-        request: Request<'_, T, impl crate::response::request::RequestCore<Resp = T>>,
-    ) -> url::Url {
-        let mut url = UrlBuilder::default();
-        request.url(&mut url);
-        let mut url = url.url();
-        url.set_path(&format!("{}.json", url.path()));
-        url
-    }
-
     #[cfg(feature = "reqwest")]
-    #[tracing::instrument(skip(self, request))]
+    #[tracing::instrument(skip(self, url))]
     pub async fn json<Json: serde::de::DeserializeOwned>(
         &self,
-        request: Request<'_, Json, impl crate::response::request::RequestCore<Resp = Json>>,
+        url: UrlBuilder<'_>,
     ) -> Result<Json> {
-        let url = Self::request_url(request);
+        let mut url = url.url();
+        url.set_path(&format!("{}.json", url.path()));
         tracing::debug!(%url);
 
         let path = url.path().to_owned();

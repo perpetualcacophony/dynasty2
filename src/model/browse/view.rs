@@ -43,3 +43,13 @@ impl Pairings {
         self.taggables.iter()
     }
 }
+
+pub enum ViewTagging {
+    Chapter(ChapterMeta),
+    OneShot(ChapterMeta),
+}
+
+pub enum ViewTaggable {
+    Grouping(GroupingMeta),
+    Pairing(TagMeta),
+}
