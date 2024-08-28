@@ -2,21 +2,18 @@ mod inner;
 pub use inner::BrowseInner as Inner;
 
 mod pages;
-pub use pages::BrowsePages as Pages;
+pub use pages::Pagination;
 
 mod items;
 pub use items::BrowseItems as Items;
 
 #[cfg(feature = "view")]
-mod view;
+pub mod view;
 #[cfg(feature = "view")]
-pub use view::{
-    Chapters as ViewChapters, Groupings as ViewGroupings, OneShots as ViewOneShots,
-    Pairings as ViewPairings,
-};
+pub use view::{HasView, View};
 
 mod tag;
-pub use tag::Tag;
+pub use tag::{RequestTag, Tag, TagParams};
 
 #[cfg(feature = "pairings")]
 mod pairing;

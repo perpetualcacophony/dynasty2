@@ -2,24 +2,31 @@ use std::ops::Deref;
 
 use crate::model::TagInternal;
 
-use super::Pages;
-
-#[cfg(feature = "view")]
-use super::ViewChapters;
+use super::Pagination;
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct BrowseInner {
+pub struct BrowseInner<View> {
     #[serde(flatten)]
     tag: TagInternal,
 
     #[serde(flatten)]
-    pages: Pages,
+    pages: Pagination,
+
+    #[serde(flatten)]
+    view: View,
 }
 
-impl Deref for BrowseInner {
+impl<T> Deref for BrowseInner<T> {
     type Target = TagInternal;
 
     fn deref(&self) -> &Self::Target {
         &self.tag
+    }
+}
+
+#[cfg(feature = "view")]
+impl<V: super::View> BrowseInner<V> {
+    fn items(&self) -> impl Iterator<Item = &V::Item> {
+        self.view.iter()
     }
 }

@@ -1,4 +1,4 @@
-use crate::{Path, Slug};
+use crate::{model::browse::View, Path, Slug};
 
 pub mod request;
 pub use request::RequestParams;
@@ -15,6 +15,7 @@ pub struct UrlBuilder<'a> {
     page: usize,
     path: Option<Path>,
     slug: Option<Slug<'a>>,
+    view: Option<&'static str>,
 }
 
 impl Default for UrlBuilder<'_> {
@@ -23,6 +24,7 @@ impl Default for UrlBuilder<'_> {
             page: 1,
             path: None,
             slug: None,
+            view: None,
         }
     }
 }
@@ -58,5 +60,10 @@ impl<'a> UrlBuilder<'a> {
         }
 
         url
+    }
+
+    pub fn view<V: View>(&mut self) -> &mut Self {
+        self.view = Some(V::ID);
+        self
     }
 }

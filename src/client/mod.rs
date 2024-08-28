@@ -4,12 +4,13 @@ use crate::{
     http,
     model::{
         author::{AuthorParams, RequestAuthor},
+        browse::{HasView, RequestTag, TagParams, View},
         chapter::ChapterParams,
         grouping::{series::SeriesParams, RequestSeries},
         RequestChapter,
     },
     response::{request::Request, Response},
-    Http, Slug, ToSlug,
+    Http, Slug, Tag, ToSlug,
 };
 
 #[cfg(feature = "pairings")]
@@ -50,6 +51,13 @@ impl Dynasty {
 
     pub fn author<'a>(&'a self, slug: &'a impl ToSlug) -> Result<RequestAuthor<'a>> {
         Ok(self.request(AuthorParams::new(slug.to_slug()?)))
+    }
+
+    pub fn tag<'a, V: View>(&'a self, slug: &'a impl ToSlug) -> Result<RequestTag<'a, V>>
+    where
+        Tag: HasView<V>,
+    {
+        Ok(RequestTag::new(self, TagParams::new(slug.to_slug()?)))
     }
 }
 

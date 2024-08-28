@@ -1,17 +1,15 @@
 use std::ops::Deref;
 
 use crate::{
-    model::{GroupingMeta, TagMeta},
+    model::{GroupingMeta, TagInternal, TagMeta},
     RequestParams, Slug,
 };
-
-use super::Inner;
 
 /// Self-published chapters based on an existing property.
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Doujins {
     #[serde(flatten)]
-    inner: Inner,
+    inner: TagInternal,
 }
 
 impl crate::Response for Doujins {
@@ -20,7 +18,7 @@ impl crate::Response for Doujins {
 }
 
 impl Deref for Doujins {
-    type Target = Inner;
+    type Target = TagInternal;
 
     fn deref(&self) -> &Self::Target {
         &self.inner
