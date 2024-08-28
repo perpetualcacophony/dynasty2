@@ -2,7 +2,7 @@ use std::future::IntoFuture;
 
 use futures::future::BoxFuture;
 
-use crate::Dynasty;
+use crate::{model::browse::BrowseParams, Dynasty, Page};
 
 use super::{Response, UrlBuilder};
 
@@ -32,6 +32,16 @@ impl<'a, R: Response> Request<'a, R> {
         let mut url = UrlBuilder::new(R::PATH);
         self.params.url(&mut url);
         Ok(self.dynasty.http().json(url).await?)
+    }
+}
+
+impl<'a, R, V> Request<'a, R>
+where
+    R: Response<Params<'a> = BrowseParams<'a, V>>,
+{
+    pub fn page(mut self, page: usize) -> Self {
+        self.params.page(Page::from_usize(page));
+        self
     }
 }
 

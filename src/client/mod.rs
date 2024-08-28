@@ -4,7 +4,7 @@ use crate::{
     http,
     model::{
         author::{AuthorParams, RequestAuthor},
-        browse::{HasView, RequestTag, TagParams, View},
+        browse::{BrowseParams, HasView, RequestTag, View},
         chapter::ChapterParams,
         grouping::{series::SeriesParams, RequestSeries},
         RequestChapter,
@@ -57,7 +57,7 @@ impl Dynasty {
     where
         Tag: HasView<V>,
     {
-        Ok(RequestTag::new(self, TagParams::new(slug.to_slug()?)))
+        Ok(RequestTag::new(self, BrowseParams::new(slug.to_slug()?)))
     }
 }
 

@@ -1,8 +1,8 @@
 use std::ops::Deref;
 
-use crate::{response::request::Request, Dynasty, RequestParams, Slug};
+use crate::{response::request::Request, Dynasty};
 
-use super::{view, HasView, Inner, View};
+use super::{view, BrowseParams, HasView, Inner, View};
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Tag<View = view::Chapters> {
@@ -12,7 +12,7 @@ pub struct Tag<View = view::Chapters> {
 
 impl<V: View> crate::Response for Tag<V> {
     const PATH: crate::Path = crate::Path::new("tags");
-    type Params<'a> = TagParams<'a, V>;
+    type Params<'a> = BrowseParams<'a, V>;
 }
 
 impl<T> Deref for Tag<T> {
@@ -33,7 +33,7 @@ impl<V: View> Tag<V> {
         V2: View,
         Self: HasView<V2>,
     {
-        RequestTag::new(dynasty, TagParams::new(self.slug()))
+        RequestTag::new(dynasty, BrowseParams::new(self.slug()))
     }
 
     pub fn chapters<'lily>(
@@ -55,34 +55,6 @@ impl<V: View> Tag<V> {
         dynasty: &'lily Dynasty,
     ) -> RequestTag<'lily, view::OneShots> {
         self.request(dynasty)
-    }
-}
-
-pub struct TagParams<'a, View> {
-    slug: Slug<'a>,
-    page: usize,
-    view: std::marker::PhantomData<View>,
-}
-
-impl<'a, T> TagParams<'a, T> {
-    pub(crate) fn new(slug: Slug<'a>) -> Self {
-        Self {
-            slug,
-            page: 1,
-            view: Default::default(),
-        }
-    }
-}
-
-impl<'a, V: View> RequestParams<'a> for TagParams<'a, V> {
-    fn url<'url, 'builder>(
-        self,
-        builder: &'url mut crate::response::UrlBuilder<'builder>,
-    ) -> &'url mut crate::response::UrlBuilder<'builder>
-    where
-        Self: 'builder + Sized,
-    {
-        builder.slug(self.slug).page(self.page).view::<V>()
     }
 }
 
