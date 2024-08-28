@@ -6,10 +6,10 @@ use crate::{
         author::{AuthorParams, RequestAuthor},
         chapter::ChapterParams,
         grouping::{series::SeriesParams, RequestSeries},
-        Doujins, RequestChapter, Series,
+        RequestChapter,
     },
-    response::{request::Request, RequestParams, Response},
-    Author, Chapter, Http, Slug, Tag, ToSlug,
+    response::{request::Request, Response},
+    Http, Slug, ToSlug,
 };
 
 #[cfg(feature = "pairings")]

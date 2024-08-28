@@ -56,7 +56,7 @@ impl From<ParseDateError> for ParseTimestampError {
 
 impl Display for ParseTimestampError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        todo!()
+        f.write_str("failed to parse timestamp")
     }
 }
 

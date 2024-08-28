@@ -1,6 +1,6 @@
 use std::ops::Deref;
 
-use crate::{model::TagInternal, response::request::Request, RequestParams, Slug};
+use crate::{model::TagInternal, RequestParams, Slug};
 
 #[derive(serde::Deserialize, Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Tag {
@@ -36,5 +36,3 @@ impl<'a> RequestParams<'a> for TagParams<'a> {
         builder.slug(self.slug)
     }
 }
-
-pub type RequestChapter<'a> = Request<'a, Tag>;

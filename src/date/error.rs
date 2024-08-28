@@ -26,7 +26,12 @@ impl ParseDateError {
 
 impl Display for ParseDateError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        todo!()
+        f.write_str("failed to parse date: ")?;
+
+        match &self.kind {
+            ParseDateErrorKind::MissingField(err) => err.fmt(f),
+            ParseDateErrorKind::ParseField(err) => err.fmt(f),
+        }
     }
 }
 
@@ -41,8 +46,28 @@ pub struct MissingFieldError {
     field: DateField,
 }
 
+impl Display for MissingFieldError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "missing field `{:?}`", self.field)
+    }
+}
+
+impl std::error::Error for MissingFieldError {}
+
 #[derive(Debug, PartialEq)]
 pub struct ParseFieldError {
     field: DateField,
     inner: ParseIntError,
+}
+
+impl Display for ParseFieldError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "failed to parse field field `{:?}`", self.field)
+    }
+}
+
+impl std::error::Error for ParseFieldError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        Some(&self.inner)
+    }
 }

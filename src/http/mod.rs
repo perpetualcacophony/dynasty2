@@ -48,7 +48,7 @@ impl Http {
                     })
                     .map_err(Error::from)?)
             },
-            |err, time| tracing::warn!(?err),
+            |err, _time| tracing::warn!(?err),
         )
         .await;
 
