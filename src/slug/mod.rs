@@ -10,7 +10,8 @@ mod owned;
 pub use owned::SlugOwned;
 
 /// Uniquely identifies a response from a given category.
-#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq)]
+#[derive(Clone, Copy, Debug, Hash, PartialEq, Eq, serde::Serialize)]
+#[serde(transparent)]
 pub struct Slug<'a> {
     inner: &'a str,
 }
@@ -68,6 +69,16 @@ impl Display for Slug<'_> {
 impl<'a> PartialEq<&'a str> for Slug<'a> {
     fn eq(&self, other: &&'a str) -> bool {
         self.as_str().eq(*other)
+    }
+}
+
+impl<'a, 'de: 'a> serde::Deserialize<'de> for Slug<'a> {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        let s = <&str>::deserialize(deserializer)?;
+        Self::parse(s).map_err(serde::de::Error::custom)
     }
 }
 

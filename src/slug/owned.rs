@@ -3,7 +3,8 @@ use std::str::FromStr;
 use super::{ParseError, Slug};
 
 /// The owned variant of the [`Slug`] type, which can be deserialized.
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash, serde::Serialize)]
+#[serde(transparent)]
 pub struct SlugOwned {
     inner: String,
 }
@@ -33,6 +34,8 @@ impl<'de> serde::Deserialize<'de> for SlugOwned {
     where
         D: serde::Deserializer<'de>,
     {
-        Self::from_str(<&str>::deserialize(deserializer)?).map_err(serde::de::Error::custom)
+        Ok(Self::from_ref(serde::Deserialize::deserialize(
+            deserializer,
+        )?))
     }
 }
